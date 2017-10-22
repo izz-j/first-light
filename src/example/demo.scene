@@ -1,0 +1,26 @@
+(defun random-shots (base extra)
+  (+ base (random extra)))
+
+(defun some-other-form ()
+  ;; This is only here for debugging purposes, so we have multiple top-level
+  ;; forms, excluding the scene definition.
+  nil)
+
+((@camera
+  ((transform)))
+ (@player-ship
+  ((transform)
+   (hit-points :hp 100))
+  (@turret
+   ((transform :translation/current (vec 1 2 0))
+    (gun-manager :active-gun 0
+                 :guns (vector (get-component 'gun @laser)
+                               (get-component 'gun @missile))))
+   (@laser
+    ((transform)
+     (gun :shot-count 10
+          :shot-type :beam)))
+   (@missile
+    ((transform)
+     (gun :shot-count (random-shots 5 5)
+          :shot-type :homing))))))
