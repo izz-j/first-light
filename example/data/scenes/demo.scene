@@ -1,11 +1,6 @@
 (defun random-shots (base extra)
   (+ base (random extra)))
 
-(defun some-other-form ()
-  ;; This is only here for debugging purposes, so we have multiple top-level
-  ;; forms, excluding the scene definition.
-  nil)
-
 (scene-definition :demo
  ((@camera
    ((transform)))
