@@ -1,22 +1,46 @@
+(in-package :gear/example)
+
 (defun random-shots (base extra)
   (+ base (random extra)))
 
 (scene-definition :demo
- ((@camera
-   ((transform)))
-  (@player-ship
-   ((transform)
-    (hit-points :hp 100))
-   (@turret
-    ((transform :translation/current (vec 1 2 0))
-     (gun-manager :active-gun 0
-                  :guns (vector (get-component 'gun @laser)
-                                (get-component 'gun @missile))))
-    (@laser
-     ((transform)
-      (gun :shot-count 10
-           :shot-type :beam)))
-    (@missile
-     ((transform)
-      (gun :shot-count (random-shots 5 5)
-           :shot-type :homing)))))))
+  ((@camera
+    ((transform)))
+   (@player-ship
+    ((transform)
+     (hit-points :hp 100))
+    (@turret
+     ((transform :translation/current (vec 1 2 0))
+      (gun-manager :active-gun 0
+                   :guns (vector (get-component 'gun @laser)
+                                 (get-component 'gun @missile))))
+     (@laser
+      ((transform)
+       (gun :shot-count 10
+            :shot-type :beam)))
+     (@missile
+      ((transform)
+       (gun :shot-count (random-shots 5 5)
+            :shot-type :homing)))))))
+
+;; debug scene that is used to test the generated code using TEST-SCENE-CODE
+
+(gear::scene-definition-code :demo-code
+  ((@camera
+    ((transform)))
+   (@player-ship
+    ((transform)
+     (hit-points :hp 100))
+    (@turret
+     ((transform :translation/current (vec 1 2 0))
+      (gun-manager :active-gun 0
+                   :guns (vector (get-component 'gun @laser)
+                                 (get-component 'gun @missile))))
+     (@laser
+      ((transform)
+       (gun :shot-count 10
+            :shot-type :beam)))
+     (@missile
+      ((transform)
+       (gun :shot-count (random-shots 5 5)
+            :shot-type :homing)))))))
