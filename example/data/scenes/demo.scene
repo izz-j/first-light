@@ -3,7 +3,7 @@
 (defun random-shots (base extra)
   (+ base (random extra)))
 
-(scene-definition :demo
+(scene-definition :demo (:enabled t)
   ((@camera
     ((transform)))
    (@player-ship
@@ -23,9 +23,7 @@
        (gun :shot-count (random-shots 5 5)
             :shot-type :homing)))))))
 
-;; debug scene that is used to test the generated code using TEST-SCENE-CODE
-
-(gear::scene-definition-code :demo-code
+(gear::scene-definition-code :demo-code (:enabled t)
   ((@camera
     ((transform)))
    (@player-ship
