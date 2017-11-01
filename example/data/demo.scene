@@ -22,23 +22,3 @@
       ((transform)
        (gun :shot-count (random-shots 5 5)
             :shot-type :homing)))))))
-
-(gear::scene-definition-code :demo-code (:enabled t)
-  ((@camera
-    ((transform) (camera)))
-   (@player-ship
-    ((transform)
-     (hit-points :hp 100))
-    (@turret
-     ((transform :translation/current (vec 1 2 0))
-      (gun-manager :active-gun 0
-                   :guns (vector (get-component 'gun @laser)
-                                 (get-component 'gun @missile))))
-     (@laser
-      ((transform)
-       (gun :shot-count 10
-            :shot-type :beam)))
-     (@missile
-      ((transform)
-       (gun :shot-count (random-shots 5 5)
-            :shot-type :homing)))))))
