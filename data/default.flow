@@ -139,7 +139,7 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignorable core-state))
-                       PROTOCOL-UPDATE-COMPONENT)))
+                       MAKE-ACTIVE-CAMERA-VIEW)))
 
         (flow-state PROTOCOL-PHYSICS-UPDATE :reset ()
                     (selector
@@ -167,6 +167,29 @@
 
                     (transition NIL))
 
+        (flow-state MAKE-ACTIVE-CAMERA-VIEW :reset ()
+                    (selector
+                     (lambda (core-state)
+                       (unless (and (camera core-state)
+                                    (activep (camera core-state)))
+                         (let ((new-camera (find-active-camera core-state)))
+                           (setf (camera core-state) new-camera)))
+                       ;; This is the camera component itself
+                       (camera core-state)))
+
+                    (action
+                     (lambda (core-state camera)
+                       (declare (ignorable core-state))
+                       (when (and camera (activep camera))
+                         ;; TODO: when the camera component is up and
+                         ;; running, put this next line back in.
+                         #++(make-view camera))))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignorable core-state))
+                       PROTOCOL-UPDATE-COMPONENT)))
+
         (flow-state PROTOCOL-UPDATE-COMPONENT :reset ()
                     (selector
                      (lambda (core-state)
@@ -179,31 +202,8 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignorable core-state))
-                       MAKE-ACTIVE-CAMERA-VIEW)))
-
-        (flow-state MAKE-ACTIVE-CAMERA-VIEW :reset ()
-                    (selector
-                     (lambda (core-state)
-                       (unless (and (camera core-state)
-                                    (activep (camera core-state)))
-                         (setf (camera core-state)
-                               (find-active-camera core-state)))
-
-                       (camera core-state)))
-
-                    (action
-                     (lambda (core-state inst)
-                       (declare (ignorable core-state inst))
-                       (when (and (camera core-state)
-                                  (activep (camera core-state)))
-                         ;; TODO: when the camera component is up and
-                         ;; running, put this next line back in.
-                         #++(make-view (camera core-state)))))
-
-                    (transition
-                     (lambda (core-state)
-                       (declare (ignorable core-state))
                        PROTOCOL-RENDER-COMPONENT)))
+
 
         (flow-state PROTOCOL-RENDER-COMPONENT :reset ()
                     (selector
