@@ -5,7 +5,7 @@
 
 (scene-definition :demo (:enabled t)
   ((@camera
-    ((transform) (camera)))
+    ((transform) (camera :activep t)))
    (@player-ship
     ((transform)
      (hit-points :hp 100))
