@@ -56,7 +56,7 @@
                         (lambda (k component)
                           (declare (ignore k))
                           (initialize-component component
-                                                (context core-state)))
+                                                (context-table core-state)))
                         component-ht)))
 
                     (transition
@@ -148,7 +148,8 @@
 
                     (action
                      (lambda (core-state inst)
-                       (physics-update-component inst (context core-state))))
+                       (physics-update-component inst
+                                                 (context-table core-state))))
 
                     (transition NIL))
 
@@ -162,10 +163,7 @@
 
                     (action
                      (lambda (core-state inst)
-                       (declare (ignore inst))
-                       (when (cfg (context core-state) :debug-flows)
-                         (format
-                          t "Would have ran flow-state PHYSICS-COLLISIONS.~%"))))
+                       (declare (ignore core-state inst))))
 
                     (transition NIL))
 
@@ -176,7 +174,7 @@
 
                     (action
                      (lambda (core-state inst)
-                       (update-component inst (context core-state))))
+                       (update-component inst (context-table core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -214,7 +212,7 @@
 
                     (action
                      (lambda (core-state inst)
-                       (render-component inst (context core-state))))
+                       (render-component inst (context-table core-state))))
 
                     (transition
                      (lambda (core-state)

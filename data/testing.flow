@@ -13,7 +13,7 @@
                     (action
                      (lambda (core-state inst)
                        (format t "Action function called.~%")
-                       (test-protocol-method-0 inst (context core-state))))
+                       (test-protocol-method-0 inst (context-table core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -34,7 +34,7 @@
                     (action
                      (lambda (core-state inst)
                        (format t "Action function called.~%")
-                       (test-protocol-method-1 inst (context core-state))))
+                       (test-protocol-method-1 inst (context-table core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -52,7 +52,7 @@
                     (action
                      (lambda (core-state inst)
                        (format t "Action function called.~%")
-                       (test-protocol-method-0 inst (context core-state))))
+                       (test-protocol-method-0 inst (context-table core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -75,7 +75,7 @@
                     (action
                      (lambda (core-state inst)
                        (format t "Action function called.~%")
-                       (test-protocol-method-1 inst (context core-state))))
+                       (test-protocol-method-1 inst (context-table core-state))))
 
                     (transition
                      (lambda (core-state)
