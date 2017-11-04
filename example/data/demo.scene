@@ -1,4 +1,4 @@
-(in-package :gear/example)
+(in-package :gear-example)
 
 (defun random-shots (base extra)
   (+ base (random extra)))

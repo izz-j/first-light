@@ -1,4 +1,4 @@
-(in-package :gear/example)
+(in-package :gear-example)
 
 (define-component gun ()
   (shot-count 0)

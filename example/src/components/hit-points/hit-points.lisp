@@ -1,4 +1,4 @@
-(in-package :gear/example)
+(in-package :gear-example)
 
 (define-component hit-points ()
   (hp 0)
