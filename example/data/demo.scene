@@ -1,3 +1,5 @@
+;; -*- mode: common-lisp -*-
+
 (in-package :gear-example)
 
 (defun random-shots (base extra)
@@ -5,7 +7,8 @@
 
 (scene-definition :demo (:enabled t)
   ((@camera
-    ((transform) (camera :activep t)))
+    ((transform)
+     (camera :activep t)))
    (@player-ship
     ((transform)
      (hit-points :hp 100))
