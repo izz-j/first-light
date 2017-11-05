@@ -1,0 +1,5 @@
+(shader-dictionary :default (:enabled t)
+  ((:vertex default-vertex)
+   (:fragment default-fragment)
+   (:programs default (:vertex default-vertex
+                       :fragment default-fragment))))
