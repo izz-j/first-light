@@ -181,9 +181,8 @@
                      (lambda (core-state camera)
                        (declare (ignorable core-state))
                        (when (and camera (activep camera))
-                         ;; TODO: when the camera component is up and
-                         ;; running, put this next line back in.
-                         #++(make-view camera))))
+                         (compute-camera-view camera
+                                              (context-table core-state)))))
 
                     (transition
                      (lambda (core-state)
