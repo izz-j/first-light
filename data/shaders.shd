@@ -1,3 +1,5 @@
+;; -*- mode: common-lisp -*-
+
 (shader-stages
  (:enabled t)
  ((:vertex default-vertex)
