@@ -1,5 +1,5 @@
-(shader-dictionary :default (:enabled t)
+(shader-dictionary :default (:enabled t :version 330)
   ((:vertex default-vertex)
-   (:fragment default-fragment)
-   (:programs default (:vertex default-vertex
-                       :fragment default-fragment))))
+   (:fragment default-fragment))
+  ((default (:vertex default-vertex
+             :fragment default-fragment))))
