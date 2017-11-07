@@ -224,6 +224,7 @@
                     (action
                      (lambda (core-state inst)
                        (declare (ignore inst))
+                       (maybe-recompile-shaders core-state)
                        nil))
 
                     (transition
