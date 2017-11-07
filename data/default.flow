@@ -214,6 +214,49 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
+                       EXIT/ACTIVE-PHASE)))
+
+        (flow-state EXIT/ACTIVE-PHASE :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL)))
+
+  (flow destroy-phase
+        (flow-state ENTRY/DESTROY-PHASE :reset ()
+                    (selector
+                     (lambda (core-state)
+                       core-state))
+
+                    (action
+                     (lambda (core-state inst)
+                       (declare (ignorable core-state inst))
+                       ;; TODO: Find all actors/components that need
+                       ;; to be destroyed and deal with them, like
+                       ;; call the destroy-component protocol, and
+                       ;; release them from all data structures in
+                       ;; core-state. This might need a few
+                       ;; flow-states to represent all of this once it
+                       ;; is figured out.
+                       nil))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       EXIT/DESTROY-PHASE)))
+
+        (flow-state EXIT/DESTROY-PHASE :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL)))
+
+
+  (flow maintenance-phase
+        (flow-state ENTRY/MAINTENANCE-PHASE :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
                        SHADER-REFRESH)))
 
         (flow-state SHADER-REFRESH :reset ()
@@ -230,15 +273,24 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       EXIT/ACTIVE-PHASE)))
+                       EXIT/MAINTENANCE-PHASE)))
 
-        (flow-state EXIT/ACTIVE-PHASE :reset ()
+        (flow-state EXIT/MAINTENANCE-PHASE :reset ()
                     (selector NIL)
                     (action NIL)
                     (transition NIL)))
 
+
   (flow perform-one-frame
         (flow-state ENTRY/PERFORM-ONE-FRAME :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       INITIALIZE-PHASE)))
+
+        (flow-state INITIALIZE-PHASE :reset ()
                     (selector
                      (lambda (core-state)
                        core-state))
@@ -272,6 +324,46 @@
                                      'ENTRY/ACTIVE-PHASE
                                      :come-from-state-name
                                      :EF-ACTIVE-PHASE)))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       DESTROY-PHASE)))
+
+        (flow-state DESTROY-PHASE :reset ()
+                    (selector
+                     (lambda (core-state)
+                       core-state))
+
+                    (action
+                     (lambda (core-state inst)
+                       (declare (ignore inst))
+                       (execute-flow core-state
+                                     :default
+                                     'destroy-phase
+                                     'ENTRY/DESTROY-PHASE
+                                     :come-from-state-name
+                                     :EF-DESTROY-PHASE)))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       MAINTENANCE-PHASE)))
+
+        (flow-state MAINTENANCE-PHASE :reset ()
+                    (selector
+                     (lambda (core-state)
+                       core-state))
+
+                    (action
+                     (lambda (core-state inst)
+                       (declare (ignore inst))
+                       (execute-flow core-state
+                                     :default
+                                     'maintenance-phase
+                                     'ENTRY/MAINTENANCE-PHASE
+                                     :come-from-state-name
+                                     :EF-MAINTENANCE-PHASE)))
 
                     (transition
                      (lambda (core-state)
