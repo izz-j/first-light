@@ -27,7 +27,7 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        REALIZE-ACTORS)))
 
         (flow-state REALIZE-ACTORS :reset ()
@@ -41,7 +41,7 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        PROTOCOL-INITIALIZE-COMPONENTS)))
 
 
@@ -61,7 +61,7 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        REALIZE-PHASE-COMMIT)))
 
         (flow-state REALIZE-PHASE-COMMIT :reset ()
@@ -76,7 +76,7 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        EXIT/INITIALIZE-PHASE)))
 
         (flow-state EXIT/INITIALIZE-PHASE :reset ()
@@ -138,7 +138,7 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        MAKE-ACTIVE-CAMERA-VIEW)))
 
         (flow-state PROTOCOL-PHYSICS-UPDATE :reset ()
@@ -174,19 +174,17 @@
                                     (activep (camera core-state)))
                          (let ((new-camera (find-active-camera core-state)))
                            (setf (camera core-state) new-camera)))
-                       ;; This is the camera component itself
                        (camera core-state)))
 
                     (action
                      (lambda (core-state camera)
-                       (declare (ignorable core-state))
                        (when (and camera (activep camera))
                          (compute-camera-view camera
                                               (context-table core-state)))))
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        PROTOCOL-UPDATE-COMPONENT)))
 
         (flow-state PROTOCOL-UPDATE-COMPONENT :reset ()
@@ -200,7 +198,7 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        PROTOCOL-RENDER-COMPONENT)))
 
 
@@ -215,7 +213,7 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        SHADER-REFRESH)))
 
         (flow-state SHADER-REFRESH :reset ()
@@ -225,13 +223,12 @@
 
                     (action
                      (lambda (core-state inst)
-                       ;; TODO: do shader refreshes.
-                       (declare (ignorable core-state inst))
+                       (declare (ignore inst))
                        nil))
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        EXIT/ACTIVE-PHASE)))
 
         (flow-state EXIT/ACTIVE-PHASE :reset ()
@@ -257,7 +254,7 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        ACTIVE-PHASE)))
 
         (flow-state ACTIVE-PHASE :reset ()
@@ -277,7 +274,7 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignorable core-state))
+                       (declare (ignore core-state))
                        EXIT/DO-NEXT-FRAME)))
 
         (flow-state EXIT/DO-NEXT-FRAME :reset ()
