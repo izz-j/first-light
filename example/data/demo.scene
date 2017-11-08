@@ -9,7 +9,7 @@
   ((@camera
     ((transform :translation/current (vec 0 0 10))
      (camera :activep t
-	     :mode :perspective
+             :mode :orthographic
              :transform (get-component 'transform @camera))))
    (@player-ship
     ((transform)
