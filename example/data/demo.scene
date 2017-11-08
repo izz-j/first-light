@@ -7,13 +7,16 @@
 
 (scene-definition :demo (:enabled t)
   ((@camera
-    ((transform)
-     (camera :activep t)))
+    ((transform :translation/current (vec 0 0 10))
+     (camera :activep t
+	     :mode :perspective
+             :transform (get-component 'transform @camera))))
    (@player-ship
     ((transform)
+     (mesh-renderer)
      (hit-points :hp 100))
     (@turret
-     ((transform :translation/current (vec 1 2 0))
+     ((transform)
       (gun-manager :active-gun 0
                    :guns (vector (get-component 'gun @laser)
                                  (get-component 'gun @missile))))

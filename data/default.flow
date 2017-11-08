@@ -87,7 +87,15 @@
   (flow active-phase
         (flow-state ENTRY/ACTIVE-PHASE :reset ()
                     (selector NIL)
-                    (action NIL)
+
+                    (action
+                     (lambda (core-state unused)
+                       (declare (ignore unused))
+                       ;; TODO: right spot for this? Maybe in render
+                       ;; flow-state.
+                       (setf (gethash :shader-dict (context-table core-state))
+                             (compiled-shaders (shaders core-state)))))
+
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
@@ -117,7 +125,8 @@
                             ;; Then update ALL transforms to current
                             ;; local/model
                             (do-nodes #'transform-node
-                              (get-component 'transform (scene-tree core-state)))
+                              (get-component 'transform
+                                             (scene-tree core-state)))
 
                             ;; Then, determine if any physics collisions
                             ;; happened and do whatever needs to be done.
@@ -173,7 +182,10 @@
                        (unless (and (camera core-state)
                                     (activep (camera core-state)))
                          (let ((new-camera (find-active-camera core-state)))
-                           (setf (camera core-state) new-camera)))
+                           (setf (camera core-state)
+                                 new-camera
+                                 (gethash :camera (context-table core-state))
+                                 (camera core-state))))
                        (camera core-state)))
 
                     (action

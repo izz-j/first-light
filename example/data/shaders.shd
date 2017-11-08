@@ -1,0 +1,9 @@
+;; -*- mode: common-lisp -*-
+
+(shader-stages (:enabled t :default-version 330)
+  ((:vertex unlit-texture-vertex)
+   (:fragment unlit-texture-fragment)))
+
+(shader-programs (:enabled t)
+  ((unlit-texture (:vertex unlit-texture-vertex
+                   :fragment unlit-texture-fragment))))
