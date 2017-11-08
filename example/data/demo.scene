@@ -12,7 +12,7 @@
              :mode :orthographic
              :transform (get-component 'transform @camera))))
    (@player-ship
-    ((transform :rotation/incremental (vec 0 0 0.1))
+    ((transform :rotation/incremental (vec 0 0 0.01))
      (mesh-renderer)
      (hit-points :hp 100))
 
