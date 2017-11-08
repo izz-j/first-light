@@ -221,9 +221,10 @@
                             ;; Then, update ALL transforms to
                             ;; current local/model
 
-                            (do-nodes #'transform-node
-                              (get-component 'transform
-                                             (scene-tree-root core-state)))
+                            (map-nodes
+                             #'transform-node
+                             (get-component 'transform
+                                            (scene-tree-root core-state)))
 
                             ;; Then, run any collisions that may
                             ;; have happened over ordered
@@ -287,7 +288,7 @@
                      (lambda (core-state)
                        core-state))
 
-                    (action NIL) ; no flow to run.
+                    (action NIL)        ; no flow to run.
 
                     (transition
                      (lambda (core-state)

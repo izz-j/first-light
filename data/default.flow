@@ -124,9 +124,9 @@
 
                             ;; Then update ALL transforms to current
                             ;; local/model
-                            (do-nodes #'transform-node
-                              (get-component 'transform
-                                             (scene-tree core-state)))
+                            (map-nodes #'transform-node
+                                       (get-component 'transform
+                                                      (scene-tree core-state)))
 
                             ;; Then, determine if any physics collisions
                             ;; happened and do whatever needs to be done.
