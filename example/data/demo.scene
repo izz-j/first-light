@@ -17,7 +17,16 @@
      (hit-points :hp 100))
 
     (@thing1
-     ((transform :translation/current (vec 150 0 0))
+     ((transform :translation/current (vec 160 0 0))
+      (mesh-renderer)))
+    (@thing2
+     ((transform :translation/current (vec 0 160 0))
+      (mesh-renderer)))
+    (@thing3
+     ((transform :translation/current (vec -160 0 0))
+      (mesh-renderer)))
+    (@thing4
+     ((transform :translation/current (vec 0 -160 0))
       (mesh-renderer)))
 
     (@turret
