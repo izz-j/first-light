@@ -7,26 +7,28 @@
 
 (scene-definition :demo (:enabled t)
   ((@camera
-    ((transform :translation/current (vec 0 0 10))
+    ((transform :translation/current (vec 0 0 1))
      (camera :activep t
              :mode :orthographic
              :transform (get-component 'transform @camera))))
+
    (@player-ship
-    ((transform :rotation/incremental (vec 0 0 0.01))
+    ((transform :rotation/incremental (vec 0 0 0.01)
+                :scale/current (vec 128 128 128))
      (mesh-renderer)
      (hit-points :hp 100))
 
     (@thing1
-     ((transform :translation/current (vec 201 0 0))
+     ((transform :translation/current (vec 1 0 0))
       (mesh-renderer)))
     (@thing2
-     ((transform :translation/current (vec 0 201 0))
+     ((transform :translation/current (vec 0 1 0))
       (mesh-renderer)))
     (@thing3
-     ((transform :translation/current (vec -201 0 0))
+     ((transform :translation/current (vec -1 0 0))
       (mesh-renderer)))
     (@thing4
-     ((transform :translation/current (vec 0 -201 0))
+     ((transform :translation/current (vec 0 -1 0))
       (mesh-renderer)))
 
     (@turret
