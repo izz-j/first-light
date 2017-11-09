@@ -7,7 +7,7 @@
              :mode :orthographic)))
    (@player
     ((transform :rotation/incremental (vec 0 0 0.02)
-                :scale/current (vec 128 128 128))
+                :scale/current (vec 64 64 64))
      (mesh-renderer)
      (hit-points :hp 100))
     (@thing1
