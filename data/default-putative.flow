@@ -22,6 +22,7 @@
                      (lambda (core-state inst)
                        ;; a core function, not exposed to users.
                        (realize-actor inst (context-table core-state))))
+                       ;; TODO: wtf? realize-actor signature is (core-state actor)
 
                     ;; After all instances have been processed, this
                     ;; function is run once by the executor in order to
