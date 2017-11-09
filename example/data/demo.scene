@@ -6,28 +6,37 @@
   (+ base (random extra)))
 
 (scene-definition :demo (:enabled t)
-  ((@camera
-    ((transform :translation/current (vec 0 0 1))
+  ((@lookat-me
+    ((transform :translation/incremental (vec 1 0 0)
+                :scale/current (vec 10 10 10))
+     (mesh-renderer)))
+
+   (@camera
+    ((transform :translation/current (vec 0 0 128))
      (camera :activep t
-             :mode :orthographic)))
+             :mode :orthographic
+             :look-at-actor @lookat-me)))
 
    (@player-ship
-    ((transform :rotation/incremental (vec 0 0 0.01)
+    ((transform :rotation/incremental (vec 0 0 0.07)
                 :scale/current (vec 128 128 128))
      (mesh-renderer)
      (hit-points :hp 100))
 
     (@thing1
-     ((transform :translation/current (vec 1 0 0))
+     ((transform :translation/current (vec 1.5 0 0)
+                 :scale/current (vec .25 .25 .25))
       (mesh-renderer)))
     (@thing2
-     ((transform :translation/current (vec 0 1 0))
+     ((transform :translation/current (vec 0 1.5 0)
+                 :scale/current (vec .5 .5 .5))
       (mesh-renderer)))
     (@thing3
-     ((transform :translation/current (vec -1 0 0))
+     ((transform :translation/current (vec -1.5 0 0)
+                 :scale/current (vec .75 .75 .75))
       (mesh-renderer)))
     (@thing4
-     ((transform :translation/current (vec 0 -1 0))
+     ((transform :translation/current (vec 0 -1.5 0))
       (mesh-renderer)))
 
     (@turret
