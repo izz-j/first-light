@@ -1,8 +1,6 @@
-;; -*- mode: common-lisp -*-
-
 (in-package :gear-example)
 
-(scene-definition :demo (:enabled t)
+(scene-definition :demo1 (:enabled t)
   ((@camera
     ((transform :translation/current (vec 0 0 1))
      (camera :activep t
