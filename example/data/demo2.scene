@@ -13,9 +13,9 @@
 
    (@camera
     ((transform :translation/current (vec 0 0 128))
-     (camera :activep t
-             :mode :orthographic
-             :look-at-actor @lookat-me)))
+     (tracking-camera :activep t
+                      :mode :orthographic
+                      :look-at-actor @lookat-me)))
 
    (@player-ship
     ((transform :rotation/incremental (vec 0 0 0.07)
