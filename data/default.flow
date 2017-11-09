@@ -177,12 +177,11 @@
         (flow-state MAKE-ACTIVE-CAMERA-VIEW :reset ()
                     (selector
                      (lambda (core-state)
-                       (unless (and (camera core-state)
-                                    (activep (camera core-state)))
-                         (let ((new-camera (find-active-camera core-state)))
-                           (setf (camera core-state) new-camera
-                                 (camera (context core-state)) (camera core-state))))
-                       (camera core-state)))
+                       (symbol-macrolet ((camera (camera (context core-state))))
+                         (unless (and camera (activep camera))
+                           (let ((new-camera (find-active-camera core-state)))
+                             (setf camera new-camera)))
+                         camera)))
 
                     (action
                      (lambda (core-state camera)
