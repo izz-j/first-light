@@ -3,5 +3,5 @@
    (:fragment default-fragment)))
 
 (shader-programs (:enabled t)
-  ((default (:vertex default-vertex
-             :fragment default-fragment))))
+  ((:default (:vertex default-vertex
+              :fragment default-fragment))))

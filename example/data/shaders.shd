@@ -5,5 +5,5 @@
    (:fragment unlit-texture-fragment)))
 
 (shader-programs (:enabled t)
-  ((unlit-texture (:vertex unlit-texture-vertex
-                   :fragment unlit-texture-fragment))))
+  ((:unlit-texture (:vertex unlit-texture-vertex
+                    :fragment unlit-texture-fragment))))
