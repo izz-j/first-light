@@ -21,8 +21,8 @@
                     (action
                      (lambda (core-state inst)
                        ;; a core function, not exposed to users.
-                       (realize-actor inst (context-table core-state))))
                        ;; TODO: wtf? realize-actor signature is (core-state actor)
+                       (realize-actor inst (context core-state))))
 
                     ;; After all instances have been processed, this
                     ;; function is run once by the executor in order to
@@ -50,7 +50,7 @@
                      (lambda (core-state inst)
                        ;; this is the USER method they want to run at
                        ;; physics speed.
-                       (physics-update inst (context-table core-state))))
+                       (physics-update inst (context core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -70,7 +70,7 @@
                     (action
                      (lambda (core-state inst)
                        ;; I don't know how this is working yet.
-                       (perform-collide inst (context-table core-state))))
+                       (perform-collide inst (context core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -91,7 +91,7 @@
 
                     (action
                      (lambda (core-state inst)
-                       (update inst (context-table core-state))))
+                       (update inst (context core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -105,7 +105,7 @@
 
                     (action
                      (lambda (core-state inst)
-                       (render inst (context-table core-state))))
+                       (render inst (context core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -128,7 +128,7 @@
                          ;; This should mark all components as
                          ;; dead and including the actor.
                          ;; NOT a user facing API.
-                         (destroy-actor inst (context-table core-state)))))
+                         (destroy-actor inst (context core-state)))))
 
                     (transition
                      (lambda (core-state)
@@ -149,7 +149,7 @@
                     (action
                      (lambda (core-state inst)
                        (unless (eq (status inst) :active)
-                         (destroy-component inst (context-table core-state)))))
+                         (destroy-component inst (context core-state)))))
 
                     (transition
                      (lambda (core-state)

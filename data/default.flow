@@ -55,8 +55,7 @@
                        (maphash
                         (lambda (k component)
                           (declare (ignore k))
-                          (initialize-component component
-                                                (context-table core-state)))
+                          (initialize-component component (context core-state)))
                         component-ht)))
 
                     (transition
@@ -93,7 +92,7 @@
                        (declare (ignore unused))
                        ;; TODO: right spot for this? Maybe in render
                        ;; flow-state.
-                       (setf (gethash :shader-dict (context-table core-state))
+                       (setf (shaders (context core-state))
                              (compiled-shaders (shaders core-state)))))
 
                     (transition
@@ -157,8 +156,7 @@
 
                     (action
                      (lambda (core-state inst)
-                       (physics-update-component inst
-                                                 (context-table core-state))))
+                       (physics-update-component inst (context core-state))))
 
                     (transition NIL))
 
@@ -182,17 +180,14 @@
                        (unless (and (camera core-state)
                                     (activep (camera core-state)))
                          (let ((new-camera (find-active-camera core-state)))
-                           (setf (camera core-state)
-                                 new-camera
-                                 (gethash :camera (context-table core-state))
-                                 (camera core-state))))
+                           (setf (camera core-state) new-camera
+                                 (camera (context core-state)) (camera core-state))))
                        (camera core-state)))
 
                     (action
                      (lambda (core-state camera)
                        (when (and camera (activep camera))
-                         (compute-camera-view camera
-                                              (context-table core-state)))))
+                         (compute-camera-view camera (context core-state)))))
 
                     (transition
                      (lambda (core-state)
@@ -206,7 +201,7 @@
 
                     (action
                      (lambda (core-state inst)
-                       (update-component inst (context-table core-state))))
+                       (update-component inst (context core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -221,7 +216,7 @@
 
                     (action
                      (lambda (core-state inst)
-                       (render-component inst (context-table core-state))))
+                       (render-component inst (context core-state))))
 
                     (transition
                      (lambda (core-state)
