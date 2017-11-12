@@ -1,6 +1,6 @@
 ;; -*- mode: common-lisp -*-
 
-(in-package :gear-example)
+(in-package :first-light-example)
 
 (defun random-shots (base extra)
   (+ base (random extra)))
