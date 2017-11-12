@@ -1,4 +1,4 @@
-(in-package :gear-example)
+(in-package :first-light-example)
 
 (scene-definition :demo1 (:enabled t)
   ((@camera
