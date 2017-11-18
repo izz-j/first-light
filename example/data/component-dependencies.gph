@@ -1,0 +1,18 @@
+;; -*- mode: common-lisp -*-
+
+(graph-definition
+ :gear-example
+ (:enabled t
+  :category component-dependency
+  :depends-on ((:core (unknown-types core-types)))
+  :roots (all-ordered-types))
+
+ ;; user chooses this name
+ (subdag ordered-types
+         ())
+
+ ;; user creates the master ordering of the types.
+ (subdag all-ordered-types
+         ((splice unknown-types)
+          -> (splice ordered-types)
+          -> (splice core-types))))
