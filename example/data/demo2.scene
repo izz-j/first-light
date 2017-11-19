@@ -42,8 +42,8 @@
     (@turret
      ((transform)
       (gun-manager :active-gun 0
-                   :guns (vector (get-component 'gun @laser)
-                                 (get-component 'gun @missile))))
+                   :guns (vector (actor-component-by-type @laser 'gun)
+                                 (actor-component-by-type @missile 'gun))))
      (@laser
       ((transform)
        (gun :shot-count 10

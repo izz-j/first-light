@@ -124,8 +124,9 @@
                             ;; Then update ALL transforms to current
                             ;; local/model
                             (map-nodes #'transform-node
-                                       (get-component 'transform
-                                                      (scene-tree core-state)))
+                                       (actor-component-by-type
+                                        (scene-tree core-state)
+                                        'transform))
 
                             ;; Then, determine if any physics collisions
                             ;; happened and do whatever needs to be done.
@@ -141,7 +142,8 @@
                          ;; computations to do their collisions instead of
                          ;; the interpolated models.
                          (interpolate-transforms
-                          (get-component 'transform (scene-tree core-state))
+                          (actor-component-by-type (scene-tree core-state)
+                                                   'transform)
                           (box.fm:alpha display)))))
 
                     (transition
