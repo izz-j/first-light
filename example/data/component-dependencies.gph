@@ -9,7 +9,7 @@
 
  ;; user chooses this name
  (subdag ordered-types
-         ())
+	 ())
 
  ;; user creates the master ordering of the types.
  (subdag all-ordered-types

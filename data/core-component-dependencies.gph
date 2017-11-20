@@ -8,7 +8,7 @@
  ;; This dag is required to be present, named exactly this name,
  ;; and be empty.
  (subdag unknown-types
-         ())
+         (unknown-types))
 
  ;; DAG core-types is required. This contains all core component
  ;; type names with the right deps if any. Created by core devs.
