@@ -1,7 +1,7 @@
 ;; -*- mode: common-lisp -*-
 
 (graph-definition
- :gear-example
+ :first-light-example
  (:enabled t
   :category component-dependency
   :depends-on ((:core (unknown-types core-types)))
