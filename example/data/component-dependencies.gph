@@ -5,11 +5,22 @@
  (:enabled t
   :category component-dependency
   :depends-on ((:core (unknown-types core-types)))
-  :roots (all-ordered-types))
+  :roots (testme))
 
  ;; user chooses this name
  (subdag ordered-types
-	 ())
+         ())
+
+ (subdag xxx
+         (i -> j)
+         (k -> l -> m -> n))
+
+ (subdag yyy
+         (x -> y -> z)
+         (u -> (splice xxx) -> v))
+
+ (subdag testme
+         (a -> (splice yyy) -> b))
 
  ;; user creates the master ordering of the types.
  (subdag all-ordered-types
