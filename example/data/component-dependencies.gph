@@ -24,6 +24,6 @@
 
  ;; user creates the master ordering of the types.
  (subdag all-ordered-types
-         ((splice unknown-types)
+         ((splice core-type)
           -> (splice ordered-types)
-          -> (splice core-types))))
+          -> (splice unknown-types))))
