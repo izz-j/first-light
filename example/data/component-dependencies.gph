@@ -20,7 +20,8 @@
          (u -> (splice xxx) -> v))
 
  (subdag testme
-         (a -> (splice yyy) -> b))
+         (a -> (splice yyy) -> b)
+         (e -> (splice yyy) -> f))
 
  ;; user creates the master ordering of the types.
  (subdag all-ordered-types
