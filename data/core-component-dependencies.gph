@@ -10,9 +10,13 @@
  (subdag unknown-types
          (unknown-types))
 
+ (subdag meshes
+         (mesh -> mesh-renderer))
+
  ;; DAG core-types is required. This contains all core component
  ;; type names with the right deps if any. Created by core devs.
  ;; It contains ALL components from core and is managed by hand.
  (subdag core-types
-         ( transform ))
+         ( transform
+	   (splice meshes)))
  )
