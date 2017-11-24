@@ -8,17 +8,22 @@
    (@player
     ((transform :rotation/incremental (vec 0 0 0.02)
                 :scale/current (vec 64 64 64))
+     (mesh)
      (mesh-renderer)
      (hit-points :hp 100))
     (@thing1
      ((transform :translation/current (vec 1 0 0))
+      (mesh)
       (mesh-renderer)))
     (@thing2
      ((transform :translation/current (vec 0 1 0))
+      (mesh)
       (mesh-renderer)))
     (@thing3
      ((transform :translation/current (vec -1 0 0))
+      (mesh)
       (mesh-renderer)))
     (@thing4
      ((transform :translation/current (vec 0 -1 0))
+      (mesh)
       (mesh-renderer))))))
