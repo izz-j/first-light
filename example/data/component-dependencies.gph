@@ -11,8 +11,14 @@
  (subdag ordered-types
          ())
 
+ (subdag aaa
+         (q r s))
+
+ (subdag zzz
+         (i -> j))
+
  (subdag xxx
-         (i -> j)
+         ((splice zzz) (splice aaa))
          (k -> l -> m -> n))
 
  (subdag yyy
@@ -21,7 +27,7 @@
 
  (subdag testme
          (a -> (splice yyy) -> b)
-         (e -> (splice yyy) -> f))
+         (e -> (splice core-types) -> f))
 
  ;; user creates the master ordering of the types.
  (subdag all-ordered-types
