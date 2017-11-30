@@ -4,7 +4,7 @@
  :first-light-example
  (:enabled t
   :category component-dependency
-  :depends-on ((:core (unknown-types core-types)))
+  :depends-on ((:core (all-unknown-types core-types)))
   :roots (testme))
 
  ;; user chooses this name
@@ -26,11 +26,12 @@
          (u -> (splice xxx) -> v))
 
  (subdag testme
+         ((splice all-unknown-types))
          (a -> (splice yyy) -> b)
          (e -> (splice core-types) -> f))
 
  ;; user creates the master ordering of the types.
  (subdag all-ordered-types
-         ((splice core-type)
+         ((splice core-types)
           -> (splice ordered-types)
           -> (splice unknown-types))))

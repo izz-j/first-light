@@ -7,8 +7,8 @@
 
  ;; This dag is required to be present, named exactly this name,
  ;; and be empty.
- (subdag unknown-types
-         (unknown-types))
+ (subdag all-unknown-types
+         ((unknown-types)))
 
  (subdag meshes
          (mesh -> mesh-renderer))
