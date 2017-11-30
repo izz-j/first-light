@@ -5,6 +5,11 @@
  (:enabled t
   :category component-dependency
   :depends-on ((:core (all-unknown-types core-types)))
+
+  ;; TODO: Hrm, add a concept of a weak-root, which is a root that
+  ;; is used if there are no depends-on references that actually
+  ;; use the splice name in the root.
+
   :roots (testme))
 
  ;; user chooses this name
