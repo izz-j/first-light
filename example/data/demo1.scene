@@ -9,12 +9,12 @@
     ((transform :rotation/incremental (vec 0 0 0.02)
                 :scale/current (vec 64 64 64))
      (mesh :location "data/mesh/default.mesh")
-     (mesh-renderer)
+     (mesh-renderer :shader :unlit-texture)
      (hit-points :hp 100))
     (@thing1
      ((transform :translation/current (vec 1 0 0))
       (mesh :location "data/mesh/default.mesh")
-      (mesh-renderer)))
+      (mesh-renderer :shader :unlit-texture)))
     (@thing2
      ((transform :translation/current (vec 0 1 0))
       (mesh :location "data/mesh/default.mesh")
@@ -22,7 +22,7 @@
     (@thing3
      ((transform :translation/current (vec -1 0 0))
       (mesh :location "data/mesh/default.mesh")
-      (mesh-renderer)))
+      (mesh-renderer :shader :unlit-texture)))
     (@thing4
      ((transform :translation/current (vec 0 -1 0))
       (mesh :location "data/mesh/default.mesh")
