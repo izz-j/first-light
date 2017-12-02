@@ -13,7 +13,7 @@
      (hit-points :hp 100))
     (@thing1
      ((transform :translation/current (vec 1 0 0))
-      (mesh :location "data/mesh/default-small.mesh")
+      (mesh :location "data/mesh/default.mesh")
       (mesh-renderer :shader :unlit-texture)))
     (@thing2
      ((transform :translation/current (vec 0 1 0))
@@ -21,7 +21,7 @@
       (mesh-renderer)))
     (@thing3
      ((transform :translation/current (vec -1 0 0))
-      (mesh :location "data/mesh/default-small.mesh")
+      (mesh :location "data/mesh/default.mesh")
       (mesh-renderer :shader :unlit-texture)))
     (@thing4
      ((transform :translation/current (vec 0 -1 0))
