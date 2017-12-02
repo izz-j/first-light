@@ -1,3 +1,5 @@
+;; -*- mode: common-lisp -*-
+
 ;;; a test mesh consisting of more than 1 buffer.
 
 (2d/color-test

@@ -1,3 +1,5 @@
+;; -*- mode: common-lisp -*-
+
 (shader-stages (:enabled t :default-version 330)
   ((:vertex default-vertex)
    (:fragment default-fragment)))
