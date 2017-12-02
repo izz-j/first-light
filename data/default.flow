@@ -19,9 +19,8 @@
                                (component-initialize-by-type-view core-state))))
 
                     (action
-                     (lambda (core-state component-ht)
-                       ;; realize all components in the component-ht.
-                       (realize-components core-state component-ht)))
+                     (lambda (core-state component)
+                       (realize-component core-state component)))
 
                     (transition
                      (lambda (core-state)
@@ -51,12 +50,8 @@
                                (component-initialize-by-type-view core-state))))
 
                     (action
-                     (lambda (core-state component-ht)
-                       (maphash
-                        (lambda (k component)
-                          (declare (ignore k))
-                          (initialize-component component (context core-state)))
-                        component-ht)))
+                     (lambda (core-state component)
+                       (initialize-component component (context core-state))))
 
                     (transition
                      (lambda (core-state)
@@ -156,8 +151,8 @@
         (flow-state PROTOCOL-PHYSICS-UPDATE :reset ()
                     (selector
                      (lambda (core-state)
-                       (values :identity-policy
-                               (component-active-view core-state))))
+                       (values :type-policy
+                               (component-active-by-type-view core-state))))
 
                     (action
                      (lambda (core-state inst)
@@ -187,7 +182,7 @@
                            (let ((new-camera (find-active-camera core-state)))
                              (setf camera new-camera)))
                          (values :identity-policy
-				 camera))))
+                                 camera))))
 
                     (action
                      (lambda (core-state camera)
@@ -202,11 +197,8 @@
         (flow-state PROTOCOL-UPDATE-COMPONENT :reset ()
                     (selector
                      (lambda (core-state)
-                       ;; TODO: Convert policy to :type-policy and
-                       ;; hash table to *-by-type and store components
-                       ;; by type.
-                       (values :identity-policy
-                               (component-active-view core-state))))
+                       (values :type-policy
+                               (component-active-by-type-view core-state))))
 
                     (action
                      (lambda (core-state inst)
@@ -221,11 +213,8 @@
         (flow-state PROTOCOL-RENDER-COMPONENT :reset ()
                     (selector
                      (lambda (core-state)
-                       ;; TODO: Convert policy to :type-policy and
-                       ;; hash table to *-by-type and store components
-                       ;; by type.
-                       (values :identity-policy
-                               (component-active-view core-state))))
+                       (values :type-policy
+                               (component-active-by-type-view core-state))))
 
                     (action
                      (lambda (core-state inst)

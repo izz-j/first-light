@@ -6,37 +6,18 @@
   :category component-dependency
   :depends-on ((:core (all-unknown-types core-types)))
 
-  ;; TODO: Hrm, add a concept of a weak-root, which is a root that
-  ;; is used if there are no depends-on references that actually
-  ;; use the splice name in the root.
+           ;; TODO: Hrm, add a concept of a weak-root, which is a root that
+           ;; is used if there are no depends-on references that actually
+           ;; use the splice name in the root.
 
-  :roots (testme))
+  :roots (all-ordered-types))
 
  ;; user chooses this name
  (subdag ordered-types
-         ())
-
- (subdag aaa
-         (q r s))
-
- (subdag zzz
-         (i -> j))
-
- (subdag xxx
-         ((splice zzz) (splice aaa))
-         (k -> l -> m -> n))
-
- (subdag yyy
-         (x -> y -> z)
-         (u -> (splice xxx) -> v))
-
- (subdag testme
-         ((splice all-unknown-types))
-         (a -> (splice yyy) -> b)
-         (e -> (splice core-types) -> f))
+         ( hit-points ))
 
  ;; user creates the master ordering of the types.
  (subdag all-ordered-types
          ((splice core-types)
           -> (splice ordered-types)
-          -> (splice unknown-types))))
+          -> (splice all-unknown-types))))
