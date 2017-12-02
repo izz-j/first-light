@@ -1,23 +1,22 @@
 ;; -*- mode: common-lisp -*-
 
-(graph-definition
- :first-light-example
- (:enabled t
-  :category component-dependency
-  :depends-on ((:core (all-unknown-types core-types)))
+(graph-definition :first-light-example
+    (:enabled t
+     :category component-dependency
+     :depends-on ((:core (all-unknown-types core-types)))
 
-           ;; TODO: Hrm, add a concept of a weak-root, which is a root that
-           ;; is used if there are no depends-on references that actually
-           ;; use the splice name in the root.
+     ;; TODO: Hrm, add a concept of a weak-root, which is a root that
+     ;; is used if there are no depends-on references that actually
+     ;; use the splice name in the root.
 
-  :roots (all-ordered-types))
+     :roots (all-ordered-types))
 
- ;; user chooses this name
- (subdag ordered-types
-         ( hit-points ))
+  ;; user chooses this name
+  (subdag ordered-types
+          ( hit-points ))
 
- ;; user creates the master ordering of the types.
- (subdag all-ordered-types
-         ((splice core-types)
-          -> (splice ordered-types)
-          -> (splice all-unknown-types))))
+  ;; user creates the master ordering of the types.
+  (subdag all-ordered-types
+          ((splice core-types)
+           -> (splice ordered-types)
+           -> (splice all-unknown-types))))

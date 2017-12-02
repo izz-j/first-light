@@ -1,22 +1,21 @@
 ;; -*- mode: common-lisp -*-
 
-(graph-definition
- :core
- (:category component-dependency
-  :enabled t)
+(graph-definition :core
+    (:category component-dependency
+     :enabled t)
 
- ;; This dag is required to be present, named exactly this name,
- ;; and having this exact form with (unknown-types) in it.
- (subdag all-unknown-types
-         ((unknown-types)))
+  ;; This dag is required to be present, named exactly this name,
+  ;; and having this exact form with (unknown-types) in it.
+  (subdag all-unknown-types
+          ((unknown-types)))
 
- (subdag meshes
-         (mesh -> mesh-renderer))
+  (subdag meshes
+          (mesh -> mesh-renderer))
 
- ;; DAG core-types is required. This contains all core component
- ;; type names with the right deps if any. Created by core devs.
- ;; It contains ALL components from core and is managed by hand.
- (subdag core-types
-         ( transform
-	   (splice meshes)))
- )
+  ;; DAG core-types is required. This contains all core component
+  ;; type names with the right deps if any. Created by core devs.
+  ;; It contains ALL components from core and is managed by hand.
+  (subdag core-types
+          ( transform
+            (splice meshes)))
+  )
