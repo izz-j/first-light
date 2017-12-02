@@ -6,7 +6,7 @@
   :enabled t)
 
  ;; This dag is required to be present, named exactly this name,
- ;; and be empty.
+ ;; and having this exact form with (unknown-types) in it.
  (subdag all-unknown-types
          ((unknown-types)))
 
