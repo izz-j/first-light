@@ -4,13 +4,13 @@
 
 (scene-definition :demo1 (:enabled t)
   ((@camera
-    ((transform :translation/current (vec 0 0 1))
+    ((transform :translation/current (vec 0 0 40))
      (camera :activep t
-             :mode :orthographic)))
+             :mode :perspective)))
    (@player
-    ((transform :rotation/incremental (vec 0 0 0.02)
-                :scale/current (vec 64 64 64))
-     (mesh :location "data/mesh/colored-quad.mesh")
+    ((transform :rotation/incremental (vec 0 0.04 0)
+                :scale/current (vec 24 24 24))
+     (mesh :location "data/mesh/colored-cube.mesh")
      (mesh-renderer :shader :default)
      (hit-points :hp 100))
     (@thing1
