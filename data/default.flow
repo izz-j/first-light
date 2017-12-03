@@ -1,8 +1,6 @@
 ;; -*- mode: common-lisp -*-
 
-(call-flow-definition
-    :default (:enabled t)
-
+(define-call-flow :default (:enabled t)
   (flow initialize-phase
         (flow-state ENTRY/INITIALIZE-PHASE :reset ()
                     (selector nil)

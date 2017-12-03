@@ -1,6 +1,6 @@
 ;; -*- mode: common-lisp -*-
 
-(graph-definition :first-light-example
+(define-graph :first-light-example
     (:enabled t
      :category component-dependency
      :depends-on ((:core (all-unknown-types core-types)))

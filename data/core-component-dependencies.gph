@@ -1,9 +1,6 @@
 ;; -*- mode: common-lisp -*-
 
-(graph-definition :core
-    (:category component-dependency
-     :enabled t)
-
+(define-graph :core (:enabled t :category component-dependency)
   ;; This dag is required to be present, named exactly this name,
   ;; and having this exact form with (unknown-types) in it.
   (subdag all-unknown-types
@@ -17,5 +14,4 @@
   ;; It contains ALL components from core and is managed by hand.
   (subdag core-types
           ( transform
-            (splice meshes)))
-  )
+            (splice meshes))))
