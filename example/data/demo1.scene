@@ -11,8 +11,7 @@
     ((transform :rotation/incremental (vec 0 0.04 0)
                 :scale/current (vec 24 24 24))
      (mesh :location "data/mesh/colored-cube.mesh")
-     (mesh-renderer :shader :default)
-     (hit-points :hp 100))
+     (mesh-renderer :shader :default))
     (@thing1
      ((transform :translation/current (vec 1 0 0)
                  :scale/current (vec 0.5 0.5 0.5))
