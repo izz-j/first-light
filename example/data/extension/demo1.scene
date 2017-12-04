@@ -6,34 +6,33 @@
   ((@camera
     ((transform :translation/current (vec 0 0 50))
      (camera :activep t
-             :mode :perspective)
-     (tracking-camera :target-actor @thing1)))
+             :mode :perspective)))
    (@player
-    ((transform :rotation/incremental (vec 0 0.04 0)
+    ((transform :rotation/incremental (vec 0.06 0.06 0.06)
                 :scale/current (vec 24 24 24))
      (mesh :location "data/mesh/colored-cube.mesh")
      (mesh-renderer :shader :default))
     (@thing1
      ((transform :translation/current (vec 1 0 0)
-                 :rotation/incremental (vec 0 0 0.2)
+                 :rotation/incremental (vec 0 0 0.1)
                  :scale/current (vec 0.5 0.5 0.5))
       (mesh :location "data/mesh/colored-quad.mesh")
       (mesh-renderer :shader :default)))
     (@thing2
      ((transform :translation/current (vec 0 1 0)
-                 :rotation/incremental (vec 0 0 0.2)
+                 :rotation/incremental (vec 0 0 0.1)
                  :scale/current (vec 0.5 0.5 0.5))
       (mesh :location "data/mesh/colored-quad.mesh")
       (mesh-renderer :shader :default)))
     (@thing3
      ((transform :translation/current (vec -1 0 0)
-                 :rotation/incremental (vec 0 0 0.2)
+                 :rotation/incremental (vec 0 0 0.1)
                  :scale/current (vec 0.5 0.5 0.5))
       (mesh :location "data/mesh/colored-quad.mesh")
       (mesh-renderer :shader :default)))
     (@thing4
      ((transform :translation/current (vec 0 -1 0)
-                 :rotation/incremental (vec 0 0 0.2)
+                 :rotation/incremental (vec 0 0 0.1)
                  :scale/current (vec 0.5 0.5 0.5))
       (mesh :location "data/mesh/colored-quad.mesh")
       (mesh-renderer :shader :default))))))
