@@ -6,7 +6,8 @@
   ((@camera
     ((transform :translation/current (vec 0 0 50))
      (camera :activep t
-             :mode :perspective)))
+             :mode :perspective)
+     (tracking-camera :target-actor @thing1)))
    (@player
     ((transform :rotation/incremental (vec 0.06 0.06 0.06)
                 :scale/current (vec 24 24 24))
