@@ -4,9 +4,11 @@
 
 (define-scene demo1 (:enabled t)
   ((@camera
-    ((transform :translation/current (vec 0 0 40))
+    ((transform :translation/current (vec 0 0 50)
+                :translation/incremental (vec 0 0 0))
      (camera :activep t
-             :mode :perspective)))
+             :mode :perspective)
+     (tracking-camera :target-actor @thing1)))
    (@player
     ((transform :rotation/incremental (vec 0 0.04 0)
                 :scale/current (vec 24 24 24))
