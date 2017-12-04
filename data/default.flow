@@ -118,10 +118,11 @@
 
                             ;; Then update ALL transforms to current
                             ;; local/model
-                            (map-nodes #'transform-node
-                                       (actor-component-by-type
-                                        (scene-tree core-state)
-                                        'transform))
+                            (fl.comp.transform:map-nodes
+                             #'fl.comp.transform::transform-node
+                             (actor-component-by-type
+                              (scene-tree core-state)
+                              'fl.comp.transform:transform))
 
                             ;; Then, determine if any physics collisions
                             ;; happened and do whatever needs to be done.
@@ -136,9 +137,9 @@
                          ;; physics collisions used ONLY the physics
                          ;; computations to do their collisions instead of
                          ;; the interpolated models.
-                         (interpolate-transforms
+                         (fl.comp.transform::interpolate-transforms
                           (actor-component-by-type (scene-tree core-state)
-                                                   'transform)
+                                                   'fl.comp.transform:transform)
                           (box.fm:alpha display)))))
 
                     (transition
@@ -176,16 +177,19 @@
                     (selector
                      (lambda (core-state)
                        (symbol-macrolet ((camera (camera (context core-state))))
-                         (unless (and camera (activep camera))
-                           (let ((new-camera (find-active-camera core-state)))
+                         (unless (and camera (fl.comp.camera::activep camera))
+                           (let ((new-camera (fl.comp.camera::find-active-camera
+                                              core-state)))
                              (setf camera new-camera)))
                          (values :identity-policy
                                  camera))))
 
                     (action
                      (lambda (core-state camera)
-                       (when (and camera (activep camera))
-                         (compute-camera-view camera (context core-state)))))
+                       (when (and camera (fl.comp.camera::activep camera))
+                         (fl.comp.camera:compute-camera-view
+                          camera
+                          (context core-state)))))
 
                     (transition
                      (lambda (core-state)
