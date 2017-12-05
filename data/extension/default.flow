@@ -122,7 +122,7 @@
                              #'fl.comp.transform::transform-node
                              (actor-component-by-type
                               (scene-tree core-state)
-                              'fl.comp.transform:$transform))
+                              'fl.comp.transform:transform))
 
                             ;; Then, determine if any physics collisions
                             ;; happened and do whatever needs to be done.
@@ -139,7 +139,7 @@
                          ;; the interpolated models.
                          (fl.comp.transform::interpolate-transforms
                           (actor-component-by-type (scene-tree core-state)
-                                                   'fl.comp.transform:$transform)
+                                                   'fl.comp.transform:transform)
                           (box.fm:alpha display)))))
 
                     (transition
@@ -176,7 +176,8 @@
         (flow-state MAKE-ACTIVE-CAMERA-VIEW :reset ()
                     (selector
                      (lambda (core-state)
-                       (symbol-macrolet ((camera (camera (context core-state))))
+                       (symbol-macrolet ((camera (active-camera
+                                                  (context core-state))))
                          (unless (and camera (fl.comp.camera::activep camera))
                            (let ((new-camera (fl.comp.camera::find-active-camera
                                               core-state)))
