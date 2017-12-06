@@ -6,34 +6,34 @@
   ((@camera
     ((transform :translation/current (vec 0 0 50))
      (camera :activep t
-              :mode :perspective)))
+             :mode :perspective)))
    (@player
     ((transform :rotation/incremental (vec 0.02 0.02 0.02)
-                 :scale/current (vec 24 24 24))
+                :scale/current (vec 24 24 24))
      (mesh :location "data/mesh/colored-cube.mesh")
      (mesh-renderer :shader :texture
                     :texture-location "data/texture/debug.png"))
     (@thing1
      ((transform :translation/current (vec 1 0 0)
-                  :rotation/incremental (vec 0 0 0.1)
-                  :scale/current (vec 0.5 0.5 0.5))
+                 :rotation/incremental (vec 0 0 0.1)
+                 :scale/current (vec 0.5 0.5 0.5))
       (mesh :location "data/mesh/colored-quad.mesh")
       (mesh-renderer :shader :color)))
     (@thing2
      ((transform :translation/current (vec 0 1 0)
-                  :rotation/incremental (vec 0 0 0.1)
-                  :scale/current (vec 0.5 0.5 0.5))
+                 :rotation/incremental (vec 0 0 0.1)
+                 :scale/current (vec 0.5 0.5 0.5))
       (mesh :location "data/mesh/colored-quad.mesh")
       (mesh-renderer :shader :color)))
     (@thing3
      ((transform :translation/current (vec -1 0 0)
-                  :rotation/incremental (vec 0 0 0.1)
-                  :scale/current (vec 0.5 0.5 0.5))
+                 :rotation/incremental (vec 0 0 0.1)
+                 :scale/current (vec 0.5 0.5 0.5))
       (mesh :location "data/mesh/colored-quad.mesh")
       (mesh-renderer :shader :color)))
     (@thing4
      ((transform :translation/current (vec 0 -1 0)
-                  :rotation/incremental (vec 0 0 0.1)
-                  :scale/current (vec 0.5 0.5 0.5))
+                 :rotation/incremental (vec 0 0 0.1)
+                 :scale/current (vec 0.5 0.5 0.5))
       (mesh :location "data/mesh/colored-quad.mesh")
       (mesh-renderer :shader :color))))))
