@@ -2,8 +2,11 @@
 
 (shader-stages (:enabled t :default-version 330)
   ((:vertex default-vertex)
-   (:fragment default-fragment)))
+   (:fragment color-fragment
+              texture-fragment)))
 
 (shader-programs (:enabled t)
-  ((:default (:vertex default-vertex
-              :fragment default-fragment))))
+  ((:color (:vertex default-vertex
+            :fragment color-fragment))
+   (:texture (:vertex default-vertex
+              :fragment texture-fragment))))
