@@ -1,0 +1,14 @@
+;; -*- mode: common-lisp -*-
+
+(define-graph :first-light
+    (:enabled t
+     :category component-package-search-order
+     :depends-on ((:core-component-search-order (core-packages)))
+     :roots (start-search))
+
+  (subdag first-light-example/search-order
+          (:first-light-example.comp.* -> :first-light-example))
+
+  (subdag start-search
+          ((splice first-light-example/search-order)
+           -> (splice core-packages))))

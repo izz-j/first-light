@@ -1,0 +1,8 @@
+;; -*- mode: common-lisp -*-
+
+(define-graph :core-component-search-order
+    (:enabled t
+     :category component-package-search-order)
+
+  (subdag core-packages
+	  (:fl.comp.*)))
