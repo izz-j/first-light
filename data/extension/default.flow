@@ -8,39 +8,66 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       REALIZE-COMPONENTS)))
+                       PENDING-TASKS)))
 
-        (flow-state REALIZE-COMPONENTS :reset ()
+        ;; High level description of this flow:
+        ;;
+        ;; 0. If pre-init is empty, go to 7.
+        ;; 1. straight up move components from pre-init to init.
+        ;; 2. straight up move actors from pre-init to init.
+        ;; 3. run initalize-component by-type in init.
+        ;; 4. realize-components from init to active.
+        ;; 5. realize-actors from init to active.
+        ;; 6. realize-phase-commit (new name: WHILE-INITIALIZE-PHASE)
+        ;;    make a decision:
+        ;;    If still stuff in pre-init go to 1
+        ;;    If nothing in pre-init, go to 7.
+        ;; 7. exit flow
+
+        ;; 0
+        (flow-state PENDING-TASKS :reset ()
+                    (selector nil)
+                    (action nil)
+                    (transition
+                     (lambda (core-state)
+                       (if (pending-preinit-tasks-p core-state)
+                           INIT-COMPONENTS
+                           EXIT/INITIALIZE-PHASE))))
+
+        ;; 1
+        (flow-state INIT-COMPONENTS :reset ()
                     (selector
                      (lambda (core-state)
-                       (values :type-policy
-                               (component-initialize-by-type-view core-state))))
+                       (values
+                        :type-policy
+                        (component-preinitialize-by-type-view core-state))))
 
                     (action
                      (lambda (core-state component)
-                       (realize-component core-state component)))
+                       (component/preinit->init core-state component)))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       REALIZE-ACTORS)))
-
-        (flow-state REALIZE-ACTORS :reset ()
+                       INIT-ACTORS)))
+        ;; 2
+        (flow-state INIT-ACTORS :reset ()
                     (selector
                      (lambda (core-state)
-                       (values :identity-policy
-                               (actor-initialize-db core-state))))
+                       (values
+                        :identity-policy
+                        (actor-preinitialize-db core-state))))
 
                     (action
-                     (lambda (core-state inst)
-                       (realize-actor core-state inst)))
+                     (lambda (core-state component)
+                       (actor/preinit->init core-state component)))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
                        PROTOCOL-INITIALIZE-COMPONENTS)))
 
-
+        ;; 3
         (flow-state PROTOCOL-INITIALIZE-COMPONENTS :reset ()
                     (selector
                      (lambda (core-state)
@@ -49,29 +76,63 @@
 
                     (action
                      (lambda (core-state component)
+                       ;; NOTE: If any new actors/components are generated
+                       ;; here. They end up in pre-init state.
                        (initialize-component component (context core-state))))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       REALIZE-PHASE-COMMIT)))
-
-        (flow-state REALIZE-PHASE-COMMIT :reset ()
+                       REALIZE-COMPONENTS)))
+        ;; 4
+        (flow-state REALIZE-COMPONENTS :reset ()
                     (selector
                      (lambda (core-state)
-                       (values :identity-policy
-                               core-state)))
+                       (values :type-policy
+                               (component-initialize-by-type-view core-state))))
 
                     (action
-                     (lambda (core-state inst)
-                       (declare (ignore inst))
-                       (realize-phase-commit core-state)))
+                     (lambda (core-state component)
+                       (component/init->active core-state component)))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       EXIT/INITIALIZE-PHASE)))
+                       REALIZE-ACTORS)))
 
+        ;; 5
+        (flow-state REALIZE-ACTORS :reset ()
+                    (selector
+                     (lambda (core-state)
+                       (values :identity-policy
+                               (actor-initialize-db core-state))))
+
+                    (action
+                     (lambda (core-state inst)
+                       (actor/init->active core-state inst)))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       WHILE-INITIALIZE-PHASE)))
+
+        ;; 6
+        (flow-state WHILE-INITIALIZE-PHASE :reset ()
+                    (selector NIL)
+                    (action NIL)
+
+                    (transition
+                     (lambda (core-state)
+                       ;; Running PROTOCOL-INITIALIZE-COMPONENTS may have
+                       ;; cause additional actors/components to be created, so
+                       ;; we check for that here and repeat as needed.
+                       (if (pending-preinit-tasks-p core-state)
+                           ;; Then do the process over again.
+                           INIT-COMPONENTS
+                           ;; Or exit this phase, we're done initializing.
+                           EXIT/INITIALIZE-PHASE))))
+
+        ;; 7
         (flow-state EXIT/INITIALIZE-PHASE :reset ()
                     (selector NIL)
                     (action NIL)
