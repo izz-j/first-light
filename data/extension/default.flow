@@ -234,6 +234,11 @@
 
                     (transition NIL))
 
+        ;; TODO: Should I run flow destroy-phase just before this next
+        ;; flow-state so that those actors/components aren't even drawn?
+        ;; Currently, I defer all actor/component destruction until the end of
+        ;; frame, far after this. I don't know what is better yet.
+
         (flow-state MAKE-ACTIVE-CAMERA-VIEW :reset ()
                     (selector
                      (lambda (core-state)
@@ -296,27 +301,28 @@
 
   (flow destroy-phase
         (flow-state ENTRY/DESTROY-PHASE :reset ()
-                    (selector
-                     (lambda (core-state)
-                       (values :identity-policy
-                               core-state)))
-
-                    (action
-                     (lambda (core-state inst)
-                       (declare (ignorable core-state inst))
-                       ;; TODO: Find all actors/components that need
-                       ;; to be destroyed and deal with them, like
-                       ;; call the destroy-component protocol, and
-                       ;; release them from all data structures in
-                       ;; core-state. This might need a few
-                       ;; flow-states to represent all of this once it
-                       ;; is figured out.
-                       nil))
-
+                    (selector NIL)
+                    (action NIL)
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
                        EXIT/DESTROY-PHASE)))
+
+        ;; TODO: Technically, if I spawn-actor then destroy-actor in the same
+        ;; function, it might do something funny....
+
+        ;; 0. If pre-destroy (actor and components) is empty, go to 9.
+        ;; 1. move components (<= ttl 0) in pre-destroy from active to destroy,
+        ;; 2. recursively move root actors (<= ttl 0) (and their components)
+        ;;    in pre-destroy from active to destroy. Set any actor/component ttl
+        ;;    in discovered instances to 0, since the root overrides all ttls.
+        ;; 3. If destroy is empty, go to 9.
+        ;; 4. run DESTROY-COMPONENT by-type in destroy.
+        ;; 5. delete-components (and remove from actors) from destroy.
+        ;; 6. delete-actors (which now should be empty) from destroy.
+        ;; 7. WHILE-DESTROYING-PHASE, goto 0.
+        ;; 8. decrement frame-time in ttl.
+        ;; 9. exit flow.
 
         (flow-state EXIT/DESTROY-PHASE :reset ()
                     (selector NIL)
