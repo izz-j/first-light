@@ -315,15 +315,75 @@
         ;; 1. move components (<= ttl 0) in pre-destroy from active to destroy,
         ;; 2. recursively move root actors (<= ttl 0) (and their components)
         ;;    in pre-destroy from active to destroy. Set any actor/component ttl
-        ;;    in discovered instances to 0, since the root overrides all ttls.
-        ;; 3. If destroy is empty, go to 9.
+        ;;    in discovered instances to 0, since the root with ttl <= 0
+        ;;    overrides all ttls.
+        ;; 3. If destroy is empty, go to 8.
         ;; 4. run DESTROY-COMPONENT by-type in destroy.
-        ;; 5. delete-components (and remove from actors) from destroy.
-        ;; 6. delete-actors (which now should be empty) from destroy.
-        ;; 7. WHILE-DESTROYING-PHASE, goto 0.
+        ;; 5. release-components (and remove from actors) from destroy.
+        ;; 6. release-actors (which now should be empty) from destroy.
+        ;; 7. RESTART-DESTROYING-PHASE, goto 0.
         ;; 8. decrement frame-time in ttl.
         ;; 9. exit flow.
 
+        ;; 0
+        (flow-state PENDING-PREDESTROY-TASKS :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition
+                     (lambda (core-state)
+                       (if (pending-predestroy-tasks-p core-state)
+                           PREPARE-PREDESTROY-COMPONENTS
+                           EXIT/DESTROY-PHASE))))
+
+        ;; 1
+        (flow-state PREPARE-PREDESTROY-COMPONENTS :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL))
+
+        ;; 2
+        (flow-state PREPARE-PREDESTROY-ACTORS :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL))
+
+        ;; 3
+        (flow-state PENDING-DESTROY-TASKS :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL))
+
+        ;; 4
+        (flow-state PROTOCOL-DESTROY-COMPONENT :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL))
+
+        ;; 5
+        (flow-state RELEASE-COMPONENTS :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL))
+
+        ;; 6
+        (flow-state RELEASE-ACTORS :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL))
+
+        ;; 7
+        (flow-state RESTART-DESTROY-PHASE :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL))
+
+        ;; 8
+        (flow-state DECREMENT-DESTROY-TIMER :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition NIL))
+
+        ;; 9
         (flow-state EXIT/DESTROY-PHASE :reset ()
                     (selector NIL)
                     (action NIL)
