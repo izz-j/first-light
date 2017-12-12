@@ -1,0 +1,22 @@
+;; -*- mode: common-lisp -*-
+
+(in-package :first-light-example)
+
+(define-scene demo (:enabled t)
+  ((@camera
+    ((transform :translation/current (vec3 0 0 50))
+     (camera :activep t
+             :mode :perspective)))
+   (@boombox
+    ((transform :translation/current (vec3 0 -4 0)
+                :rotation/incremental (vec3 0 0.1 0)
+                :scale/current (vec3 350 350 350))
+     (mesh :location "data/mesh/boombox.glb")
+     (mesh-renderer :shader :texture
+                    :texture-location "data/texture/debug.png")))
+   (@fish
+    ((transform :rotation/incremental (vec3 0 0.03 0)
+                :scale/current (vec3 24 24 24))
+     (mesh :location "data/mesh/fish.glb")
+     (mesh-renderer :shader :texture
+                    :texture-location "data/texture/debug.png")))))
