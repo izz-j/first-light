@@ -14,11 +14,11 @@
      (mesh :location "data/mesh/fish.glb")
      (mesh-renderer :shader :texture
                     :texture-location "data/texture/debug.png")))
-   (@quad
+   (@cube
     ((transform :translation/current (vec3 0 15 0)
                 :rotation/incremental (vec3 0.02 0.02 0.02)
                 :scale/current (vec3 4 4 4))
-     (mesh :location "data/mesh/quad.glb")
+     (mesh :location "data/mesh/cube.glb")
      (mesh-renderer :shader :texture
                     :texture-location "data/texture/debug.png")))
    (@sphere
