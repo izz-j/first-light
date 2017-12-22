@@ -311,11 +311,6 @@
         ;; TODO: Technically, if I spawn-actor then destroy-actor in the same
         ;; function, it might do something funny....
 
-        ;; TODO: fix this to remove all recursive actors all at once instead
-        ;; of making them go through pre-destroy. This is because they
-        ;; won't have a parent since we're deleting them from root towards
-        ;; leaves. Or at least think about it more.
-
         ;; 0. If pre-destroy (actor and components) is empty, go to 10.
         ;;
         ;; 1. move components (<= ttl 0) in pre-destroy from init/active to
@@ -347,7 +342,9 @@
         ;; 0
         (flow-state PENDING-PREDESTROY-TASKS :reset ()
                     (selector NIL)
+
                     (action NIL)
+
                     (transition
                      (lambda (core-state)
                        (if (pending-predestroy-tasks-p core-state)
@@ -356,9 +353,21 @@
 
         ;; 1
         (flow-state PREPARE-PREDESTROY-COMPONENTS :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition NIL))
+                    (selector
+                     (lambda (core-state)
+                       (values :identity-policy
+                               (component-predestroy-view core-state))))
+
+                    (action
+                     (lambda (core-state component)
+                       (when (<= (ttl component) 0)
+                         (component/init-or-active->destroy core-state
+                                                            component))))
+
+                    (transition
+                     (lambda (core-state)
+		       (declare (ignore core-state))
+                       PREPARE-PREDESTROY-ACTORS)))
 
         ;; 2
         (flow-state PREPARE-PREDESTROY-ACTORS :reset ()
