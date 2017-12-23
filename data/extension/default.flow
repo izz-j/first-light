@@ -366,16 +366,28 @@
 
                     (transition
                      (lambda (core-state)
-		       (declare (ignore core-state))
+                       (declare (ignore core-state))
                        PREPARE-PREDESTROY-ACTORS)))
 
         ;; 2
         (flow-state PREPARE-PREDESTROY-ACTORS :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition NIL))
+                    (selector
+                     (lambda (core-state)
+                       (values :identity-policy
+                               (actor-predestroy-view core-state))))
 
-        ;; 3
+                    (action
+                     (lambda (core-state actor)
+                       (when (<= (ttl actor) 0)
+                         (actor/init-or-active->destroy core-state actor))))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       DESTROY-ACTOR-CHILDREN)))
+
+
+        ;; 3 TODO Start here, keep implementing.
         (flow-state DESTROY-ACTOR-CHILDREN :reset ()
                     (selector NIL)
                     (action NIL)
