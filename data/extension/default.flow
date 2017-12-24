@@ -2,13 +2,13 @@
 
 (define-call-flow :default (:enabled t)
   (flow initialize-phase
-        (flow-state ENTRY/INITIALIZE-PHASE :reset ()
+        (flow-state entry/initialize-phase :reset ()
                     (selector nil)
                     (action nil)
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       PENDING-TASKS)))
+                       pending-tasks)))
 
         ;; High level description of this flow:
         ;;
@@ -25,22 +25,22 @@
         ;; 7. exit flow
 
         ;; 0
-        (flow-state PENDING-TASKS :reset ()
+        (flow-state pending-tasks :reset ()
                     (selector nil)
                     (action nil)
                     (transition
                      (lambda (core-state)
                        (if (pending-preinit-tasks-p core-state)
-                           INIT-COMPONENTS
-                           EXIT/INITIALIZE-PHASE))))
+                           init-components
+                           exit/initialize-phase))))
 
         ;; 1
-        (flow-state INIT-COMPONENTS :reset ()
+        (flow-state init-components :reset ()
                     (selector
                      (lambda (core-state)
                        (values
                         :type-policy
-                        (component-preinitialize-by-type-view core-state))))
+                        (component-preinit-by-type-view (tables core-state)))))
 
                     (action
                      (lambda (core-state component)
@@ -49,14 +49,14 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       INIT-ACTORS)))
+                       init-actors)))
         ;; 2
-        (flow-state INIT-ACTORS :reset ()
+        (flow-state init-actors :reset ()
                     (selector
                      (lambda (core-state)
                        (values
                         :identity-policy
-                        (actor-preinitialize-db core-state))))
+                        (actor-preinit-db (tables core-state)))))
 
                     (action
                      (lambda (core-state component)
@@ -65,14 +65,15 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       PROTOCOL-INITIALIZE-COMPONENTS)))
+                       protocol-initialize-components)))
 
         ;; 3
-        (flow-state PROTOCOL-INITIALIZE-COMPONENTS :reset ()
+        (flow-state protocol-initialize-components :reset ()
                     (selector
                      (lambda (core-state)
                        (values :type-policy
-                               (component-initialize-by-type-view core-state))))
+                               (component-init-by-type-view
+                                (tables core-state)))))
 
                     (action
                      (lambda (core-state component)
@@ -83,13 +84,14 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       REALIZE-COMPONENTS)))
+                       realize-components)))
         ;; 4
-        (flow-state REALIZE-COMPONENTS :reset ()
+        (flow-state realize-components :reset ()
                     (selector
                      (lambda (core-state)
                        (values :type-policy
-                               (component-initialize-by-type-view core-state))))
+                               (component-init-by-type-view
+                                (tables core-state)))))
 
                     (action
                      (lambda (core-state component)
@@ -98,14 +100,14 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       REALIZE-ACTORS)))
+                       realize-actors)))
 
         ;; 5
-        (flow-state REALIZE-ACTORS :reset ()
+        (flow-state realize-actors :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (actor-initialize-db core-state))))
+                               (actor-init-db (tables core-state)))))
 
                     (action
                      (lambda (core-state inst)
@@ -114,12 +116,12 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       WHILE-INITIALIZE-PHASE)))
+                       while-initialize-phase)))
 
         ;; 6
-        (flow-state WHILE-INITIALIZE-PHASE :reset ()
-                    (selector NIL)
-                    (action NIL)
+        (flow-state while-initialize-phase :reset ()
+                    (selector nil)
+                    (action nil)
 
                     (transition
                      (lambda (core-state)
@@ -128,19 +130,19 @@
                        ;; we check for that here and repeat as needed.
                        (if (pending-preinit-tasks-p core-state)
                            ;; Then do the process over again.
-                           INIT-COMPONENTS
+                           init-components
                            ;; Or exit this phase, we're done initializing.
-                           EXIT/INITIALIZE-PHASE))))
+                           exit/initialize-phase))))
 
         ;; 7
-        (flow-state EXIT/INITIALIZE-PHASE :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition NIL)))
+        (flow-state exit/initialize-phase :reset ()
+                    (selector nil)
+                    (action nil)
+                    (transition nil)))
 
   (flow active-phase
-        (flow-state ENTRY/ACTIVE-PHASE :reset ()
-                    (selector NIL)
+        (flow-state entry/active-phase :reset ()
+                    (selector nil)
 
                     (action
                      (lambda (core-state unused)
@@ -153,9 +155,9 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       PHYSICS-LOOP)))
+                       physics-loop)))
 
-        (flow-state PHYSICS-LOOP :reset ()
+        (flow-state physics-loop :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
@@ -173,9 +175,9 @@
                             (execute-flow core-state
                                           :default
                                           'active-phase
-                                          'PROTOCOL-PHYSICS-UPDATE
+                                          'protocol-physics-update
                                           :come-from-state-name
-                                          :EF-PHYSICS-UPDATE)
+                                          :ef-physics-update)
 
                             ;; Then update ALL transforms to current
                             ;; local/model
@@ -190,9 +192,9 @@
                             (execute-flow core-state
                                           :default
                                           'active-phase
-                                          'PHYSICS-COLLISIONS
+                                          'physics-collisions
                                           :come-from-state-name
-                                          :EF-PHYSICS-COLLISIONS)))
+                                          :ef-physics-collisions)))
 
                          ;; Then produce the interpolated model. Note that
                          ;; physics collisions used ONLY the physics
@@ -206,40 +208,41 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       MAKE-ACTIVE-CAMERA-VIEW)))
+                       make-active-camera-view)))
 
-        (flow-state PROTOCOL-PHYSICS-UPDATE :reset ()
+        (flow-state protocol-physics-update :reset ()
                     (selector
                      (lambda (core-state)
                        (values :type-policy
-                               (component-active-by-type-view core-state))))
+                               (component-active-by-type-view
+                                (tables core-state)))))
 
                     (action
                      (lambda (core-state inst)
                        (physics-update-component inst (context core-state))))
 
-                    (transition NIL))
+                    (transition nil))
 
         ;; TODO: PHYSICS-COLLISIONS is not yet implemented, there may be
         ;; more work here than this single state. This will compute
         ;; collisions and then inform the recipients of those
         ;; collisions as desired in the boundary regions components
         ;; (yet to be written).
-        (flow-state PHYSICS-COLLISIONS :reset ()
-                    (selector NIL)
+        (flow-state physics-collisions :reset ()
+                    (selector nil)
 
                     (action
                      (lambda (core-state inst)
                        (declare (ignore core-state inst))))
 
-                    (transition NIL))
+                    (transition nil))
 
         ;; TODO: Should I run flow destroy-phase just before this next
         ;; flow-state so that those actors/components aren't even drawn?
         ;; Currently, I defer all actor/component destruction until the end of
         ;; frame, far after this. I don't know what is better yet.
 
-        (flow-state MAKE-ACTIVE-CAMERA-VIEW :reset ()
+        (flow-state make-active-camera-view :reset ()
                     (selector
                      (lambda (core-state)
                        (symbol-macrolet ((camera (active-camera
@@ -248,8 +251,7 @@
                            (let ((new-camera (fl.comp.camera::find-active-camera
                                               core-state)))
                              (setf camera new-camera)))
-                         (values :identity-policy
-                                 camera))))
+                         (values :identity-policy camera))))
 
                     (action
                      (lambda (core-state camera)
@@ -261,13 +263,14 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       PROTOCOL-UPDATE-COMPONENT)))
+                       protocol-update-component)))
 
-        (flow-state PROTOCOL-UPDATE-COMPONENT :reset ()
+        (flow-state protocol-update-component :reset ()
                     (selector
                      (lambda (core-state)
                        (values :type-policy
-                               (component-active-by-type-view core-state))))
+                               (component-active-by-type-view
+                                (tables core-state)))))
 
                     (action
                      (lambda (core-state inst)
@@ -276,14 +279,14 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       PROTOCOL-RENDER-COMPONENT)))
+                       protocol-render-component)))
 
-
-        (flow-state PROTOCOL-RENDER-COMPONENT :reset ()
+        (flow-state protocol-render-component :reset ()
                     (selector
                      (lambda (core-state)
                        (values :type-policy
-                               (component-active-by-type-view core-state))))
+                               (component-active-by-type-view
+                                (tables core-state)))))
 
                     (action
                      (lambda (core-state inst)
@@ -292,21 +295,21 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       EXIT/ACTIVE-PHASE)))
+                       exit/active-phase)))
 
-        (flow-state EXIT/ACTIVE-PHASE :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition NIL)))
+        (flow-state exit/active-phase :reset ()
+                    (selector nil)
+                    (action nil)
+                    (transition nil)))
 
   (flow destroy-phase
-        (flow-state ENTRY/DESTROY-PHASE :reset ()
-                    (selector NIL)
-                    (action NIL)
+        (flow-state entry/destroy-phase :reset ()
+                    (selector nil)
+                    (action nil)
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-		       PENDING-PREDESTROY-TASKS)))
+                       pending-predestroy-tasks)))
 
         ;; This should handle if I spawn an actor/component and then destroy it
         ;; in the same function, etc, etc.
@@ -344,58 +347,60 @@
         ;; 10. exit flow.
 
         ;; 0
-        (flow-state PENDING-PREDESTROY-TASKS :reset ()
-                    (selector NIL)
+        (flow-state pending-predestroy-tasks :reset ()
+                    (selector nil)
 
-                    (action NIL)
+                    (action nil)
 
                     (transition
                      (lambda (core-state)
                        (if (pending-predestroy-tasks-p core-state)
-                           PREPARE-PREDESTROY-COMPONENTS
-			   PENDING-DESTROY-TASKS))))
+                           prepare-predestroy-components
+                           pending-destroy-tasks))))
 
         ;; 1
-        (flow-state PREPARE-PREDESTROY-COMPONENTS :reset ()
+        (flow-state prepare-predestroy-components :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (component-predestroy-view core-state))))
+                               (component-predestroy-view
+                                (tables core-state)))))
 
                     (action
                      (lambda (core-state component)
-                       (when (<= (ttl component) 0)
-                         (component/init-or-active->destroy core-state
-                                                            component))))
+                       (unless (plusp (ttl component))
+                         (component/init-or-active->destroy
+                          core-state
+                          component))))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       PREPARE-PREDESTROY-ACTORS)))
+                       prepare-predestroy-actors)))
 
         ;; 2
-        (flow-state PREPARE-PREDESTROY-ACTORS :reset ()
+        (flow-state prepare-predestroy-actors :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (actor-predestroy-view core-state))))
+                               (actor-predestroy-view (tables core-state)))))
 
                     (action
                      (lambda (core-state actor)
-                       (when (<= (ttl actor) 0)
+                       (unless (plusp (ttl actor))
                          (actor/init-or-active->destroy core-state actor))))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       DESTROY-ACTOR-CHILDREN)))
+                       destroy-actor-children)))
 
-	;; 3
-        (flow-state DESTROY-ACTOR-CHILDREN :reset ()
+        ;; 3
+        (flow-state destroy-actor-children :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (actor-destroy-db core-state))))
+                               (actor-destroy-db (tables core-state)))))
 
                     (action
                      (lambda (core-state actor)
@@ -404,24 +409,25 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       PENDING-DESTROY-TASKS)))
+                       pending-destroy-tasks)))
 
         ;; 4
-        (flow-state PENDING-DESTROY-TASKS :reset ()
-                    (selector NIL)
-                    (action NIL)
+        (flow-state pending-destroy-tasks :reset ()
+                    (selector nil)
+                    (action nil)
                     (transition
                      (lambda (core-state)
                        (if (pending-destroy-tasks-p core-state)
-                           PROTOCOL-DESTROY-COMPONENT
-                           DECREMENT-COMPONENT-DESTROY-TIMER))))
+                           protocol-destroy-component
+                           decrement-component-destroy-timer))))
 
         ;; 5
-        (flow-state PROTOCOL-DESTROY-COMPONENT :reset ()
+        (flow-state protocol-destroy-component :reset ()
                     (selector
                      (lambda (core-state)
                        (values :type-policy
-                               (component-destroy-by-type-view core-state))))
+                               (component-destroy-by-type-view
+                                (tables core-state)))))
 
                     (action
                      (lambda (core-state component)
@@ -430,14 +436,14 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       DISCONNECT-DESTROYED-ACTORS)))
+                       disconnect-destroyed-actors)))
 
         ;; 5.5
-        (flow-state DISCONNECT-DESTROYED-ACTORS :reset ()
+        (flow-state disconnect-destroyed-actors :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (actor-destroy-db core-state))))
+                               (actor-destroy-db (tables core-state)))))
 
                     (action
                      (lambda (core-state actor)
@@ -446,14 +452,15 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       RELEASE-COMPONENTS)))
+                       release-components)))
 
         ;; 6
-        (flow-state RELEASE-COMPONENTS :reset ()
+        (flow-state release-components :reset ()
                     (selector
                      (lambda (core-state)
                        (values :type-policy
-                               (component-destroy-by-type-view core-state))))
+                               (component-destroy-by-type-view
+                                (tables core-state)))))
                     (action
                      (lambda (core-state component)
                        (component/destroy->released core-state component)))
@@ -461,14 +468,14 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       RELEASE-ACTORS)))
+                       release-actors)))
 
         ;; 7
-        (flow-state RELEASE-ACTORS :reset ()
+        (flow-state release-actors :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (actor-destroy-db core-state))))
+                               (actor-destroy-db (tables core-state)))))
 
                     (action
                      (lambda (core-state actor)
@@ -477,41 +484,43 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       RESTART-DESTROY-PHASE)))
+                       restart-destroy-phase)))
 
         ;; 8
-        (flow-state RESTART-DESTROY-PHASE :reset ()
-                    (selector NIL)
-                    (action NIL)
+        (flow-state restart-destroy-phase :reset ()
+                    (selector nil)
+                    (action nil)
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       ;; The end of a do/while construct...
-                       PENDING-PREDESTROY-TASKS)))
+                       ;; the end of a do/while construct...
+                       pending-predestroy-tasks)))
 
         ;; 9 A
-        (flow-state DECREMENT-COMPONENT-DESTROY-TIMER :reset ()
+        (flow-state decrement-component-destroy-timer :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (component-predestroy-view core-state))))
+                               (component-predestroy-view
+                                (tables core-state)))))
 
                     (action
                      (lambda (core-state component)
-                       (component/countdown-to-destruction core-state
-                                                           component)))
+                       (component/countdown-to-destruction
+                        core-state
+                        component)))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       DECREMENT-ACTOR-DESTROY-TIMER)))
+                       decrement-actor-destroy-timer)))
 
-        ;; 9 B
-        (flow-state DECREMENT-ACTOR-DESTROY-TIMER :reset ()
+        ;; 9 b
+        (flow-state decrement-actor-destroy-timer :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (actor-predestroy-view core-state))))
+                               (actor-predestroy-view (tables core-state)))))
                     (action
                      (lambda (core-state actor)
                        (actor/countdown-to-destruction core-state actor)))
@@ -519,25 +528,25 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       EXIT/DESTROY-PHASE)))
+                       exit/destroy-phase)))
 
         ;; 10
-        (flow-state EXIT/DESTROY-PHASE :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition NIL)))
+        (flow-state exit/destroy-phase :reset ()
+                    (selector nil)
+                    (action nil)
+                    (transition nil)))
 
 
   (flow maintenance-phase
-        (flow-state ENTRY/MAINTENANCE-PHASE :reset ()
-                    (selector NIL)
-                    (action NIL)
+        (flow-state entry/maintenance-phase :reset ()
+                    (selector nil)
+                    (action nil)
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       SHADER-REFRESH)))
+                       shader-refresh)))
 
-        (flow-state SHADER-REFRESH :reset ()
+        (flow-state shader-refresh :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
@@ -552,28 +561,27 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       EXIT/MAINTENANCE-PHASE)))
+                       exit/maintenance-phase)))
 
-        (flow-state EXIT/MAINTENANCE-PHASE :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition NIL)))
+        (flow-state exit/maintenance-phase :reset ()
+                    (selector nil)
+                    (action nil)
+                    (transition nil)))
 
 
   (flow perform-one-frame
-        (flow-state ENTRY/PERFORM-ONE-FRAME :reset ()
-                    (selector NIL)
-                    (action NIL)
+        (flow-state entry/perform-one-frame :reset ()
+                    (selector nil)
+                    (action nil)
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       INITIALIZE-PHASE)))
+                       initialize-phase)))
 
-        (flow-state INITIALIZE-PHASE :reset ()
+        (flow-state initialize-phase :reset ()
                     (selector
                      (lambda (core-state)
-                       (values :identity-policy
-                               core-state)))
+                       (values :identity-policy core-state)))
 
                     (action
                      (lambda (core-state inst)
@@ -581,20 +589,19 @@
                        (execute-flow core-state
                                      :default
                                      'initialize-phase
-                                     'ENTRY/INITIALIZE-PHASE
+                                     'entry/initialize-phase
                                      :come-from-state-name
-                                     :EF-REALIZE-PHASE)))
+                                     :ef-realize-phase)))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       ACTIVE-PHASE)))
+                       active-phase)))
 
-        (flow-state ACTIVE-PHASE :reset ()
+        (flow-state active-phase :reset ()
                     (selector
                      (lambda (core-state)
-                       (values :identity-policy
-                               core-state)))
+                       (values :identity-policy core-state)))
 
                     (action
                      (lambda (core-state inst)
@@ -602,20 +609,19 @@
                        (execute-flow core-state
                                      :default
                                      'active-phase
-                                     'ENTRY/ACTIVE-PHASE
+                                     'entry/active-phase
                                      :come-from-state-name
-                                     :EF-ACTIVE-PHASE)))
+                                     :ef-active-phase)))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       DESTROY-PHASE)))
+                       destroy-phase)))
 
-        (flow-state DESTROY-PHASE :reset ()
+        (flow-state destroy-phase :reset ()
                     (selector
                      (lambda (core-state)
-                       (values :identity-policy
-                               core-state)))
+                       (values :identity-policy core-state)))
 
                     (action
                      (lambda (core-state inst)
@@ -623,20 +629,19 @@
                        (execute-flow core-state
                                      :default
                                      'destroy-phase
-                                     'ENTRY/DESTROY-PHASE
+                                     'entry/destroy-phase
                                      :come-from-state-name
-                                     :EF-DESTROY-PHASE)))
+                                     :ef-destroy-phase)))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       MAINTENANCE-PHASE)))
+                       maintenance-phase)))
 
-        (flow-state MAINTENANCE-PHASE :reset ()
+        (flow-state maintenance-phase :reset ()
                     (selector
                      (lambda (core-state)
-                       (values :identity-policy
-                               core-state)))
+                       (values :identity-policy core-state)))
 
                     (action
                      (lambda (core-state inst)
@@ -644,21 +649,21 @@
                        (execute-flow core-state
                                      :default
                                      'maintenance-phase
-                                     'ENTRY/MAINTENANCE-PHASE
+                                     'entry/maintenance-phase
                                      :come-from-state-name
-                                     :EF-MAINTENANCE-PHASE)))
+                                     :ef-maintenance-phase)))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       EXIT/DO-NEXT-FRAME)))
+                       exit/do-next-frame)))
 
-        (flow-state EXIT/DO-NEXT-FRAME :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition NIL))
+        (flow-state exit/do-next-frame :reset ()
+                    (selector nil)
+                    (action nil)
+                    (transition nil))
 
-        (flow-state EXIT/GAME-OVER :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition NIL))))
+        (flow-state exit/game-over :reset ()
+                    (selector nil)
+                    (action nil)
+                    (transition nil))))
