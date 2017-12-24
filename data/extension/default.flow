@@ -366,8 +366,7 @@
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (component-predestroy-view
-                                (tables core-state)))))
+                               (component-predestroy-view (tables core-state)))))
 
                     (action
                      (lambda (core-state component)
@@ -530,7 +529,8 @@
 
                     (transition
                      (lambda (core-state)
-                       (declare (ignore core-state)))))
+                       (declare (ignore core-state))
+                       restart-predestroy-phase)))
 
         ;; 10
         (flow-state restart-predestroy-phase :reset ()
