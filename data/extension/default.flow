@@ -306,15 +306,17 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-		       PENDING-PREDESTROY-TASKS)))
+                       PENDING-PREDESTROY-TASKS)))
+
+        ;; TODO: Fix me.
 
         ;; This should handle if I spawn an actor/component and then destroy it
         ;; in the same function, etc, etc.
         ;;
-        ;; 0. If pre-destroy (actor and components) is empty, go to 4
+        ;; 0. If pre-destroy (actor and components) is empty, go to 5
         ;;
         ;; 1. move components (<= ttl 0) in pre-destroy from init/active to
-        ;; destroy.
+        ;;    destroy.
         ;;
         ;; 2. move root actors (<= ttl 0) (and their components)
         ;;    in pre-destroy from init/active to destroy.
@@ -325,23 +327,23 @@
         ;;    all pending ttls for anything that may be in the process of being
         ;;    destroyed.
         ;;
-        ;; 4. If destroy is empty, go to 9.
-        ;;
-        ;; 5. run DESTROY-COMPONENT by-type in destroy.
-        ;;
-        ;; 5.5 disconnect all destroyed actors from the scene heirarchy.
-        ;;
-        ;; 6. release-components (and remove from actors) from destroy.
-        ;;
-        ;; 7. release-actors (which now should be empty) from destroy.
-        ;;
-        ;; 8. restart to see if anything else got marked to be destroyed
-        ;;    during this entire process, goto 0.
-        ;;
-        ;; 9. A) decrement ttl by frame-time for predestroying components
+        ;; 4. A) decrement ttl by frame-time for predestroying components
         ;;    B) decrement ttl by frame-time for predestroying actors.
         ;;
-        ;; 10. exit flow.
+        ;; 5. If destroy is empty, go to 11.
+        ;;
+        ;; 6. run DESTROY-COMPONENT by-type in destroy.
+        ;;
+        ;; 7. disconnect all destroyed actors from the scene heirarchy.
+        ;;
+        ;; 8. release-components (and remove from actors) from destroy.
+        ;;
+        ;; 9. release-actors (which now should be empty) from destroy.
+        ;;
+        ;; 10. restart to see if anything else got marked to be destroyed
+        ;;     during this entire process, goto 0.
+        ;;
+        ;; 11. exit flow.
 
         ;; 0
         (flow-state PENDING-PREDESTROY-TASKS :reset ()
@@ -351,9 +353,10 @@
 
                     (transition
                      (lambda (core-state)
+                       ;; Start of a while construct
                        (if (pending-predestroy-tasks-p core-state)
                            PREPARE-PREDESTROY-COMPONENTS
-			   PENDING-DESTROY-TASKS))))
+                           PENDING-DESTROY-TASKS))))
 
         ;; 1
         (flow-state PREPARE-PREDESTROY-COMPONENTS :reset ()
@@ -390,106 +393,34 @@
                        (declare (ignore core-state))
                        DESTROY-ACTOR-CHILDREN)))
 
-	;; 3
+        ;; 3
         (flow-state DESTROY-ACTOR-CHILDREN :reset ()
                     (selector
                      (lambda (core-state)
                        (values :identity-policy
-                               (actor-destroy-db core-state))))
+                               ;; NOTE: We get the keys here because the action
+                               ;; will be adding values to this hash table as we
+                               ;; iterate over the keys. We need to copy the
+                               ;; list of keys in order to satisfy the traversal
+                               ;; rules of hash tables.
+                               (alexandria:hash-table-keys
+                                (actor-destroy-db core-state)))))
 
                     (action
                      (lambda (core-state actor)
-                       (actor/destroy-descendants core-state actor)))
+                       ;; NOTE: See selector for this flow-state.
+                       ;;
+                       ;; NOTE: We check for the actor here since we could have
+                       ;; had an empty list returned in the selector. That will
+                       ;; call this function with actor bound to nil.
+                       (when actor
+                         (actor/destroy-descendants core-state actor))))
 
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       PENDING-DESTROY-TASKS)))
-
-        ;; 4
-        (flow-state PENDING-DESTROY-TASKS :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition
-                     (lambda (core-state)
-                       (if (pending-destroy-tasks-p core-state)
-                           PROTOCOL-DESTROY-COMPONENT
-                           DECREMENT-COMPONENT-DESTROY-TIMER))))
-
-        ;; 5
-        (flow-state PROTOCOL-DESTROY-COMPONENT :reset ()
-                    (selector
-                     (lambda (core-state)
-                       (values :type-policy
-                               (component-destroy-by-type-view core-state))))
-
-                    (action
-                     (lambda (core-state component)
-                       (destroy-component component (context core-state))))
-
-                    (transition
-                     (lambda (core-state)
-                       (declare (ignore core-state))
-                       DISCONNECT-DESTROYED-ACTORS)))
-
-        ;; 5.5
-        (flow-state DISCONNECT-DESTROYED-ACTORS :reset ()
-                    (selector
-                     (lambda (core-state)
-                       (values :identity-policy
-                               (actor-destroy-db core-state))))
-
-                    (action
-                     (lambda (core-state actor)
-                       (actor/disconnect core-state actor)))
-
-                    (transition
-                     (lambda (core-state)
-                       (declare (ignore core-state))
-                       RELEASE-COMPONENTS)))
-
-        ;; 6
-        (flow-state RELEASE-COMPONENTS :reset ()
-                    (selector
-                     (lambda (core-state)
-                       (values :type-policy
-                               (component-destroy-by-type-view core-state))))
-                    (action
-                     (lambda (core-state component)
-                       (component/destroy->released core-state component)))
-
-                    (transition
-                     (lambda (core-state)
-                       (declare (ignore core-state))
-                       RELEASE-ACTORS)))
-
-        ;; 7
-        (flow-state RELEASE-ACTORS :reset ()
-                    (selector
-                     (lambda (core-state)
-                       (values :identity-policy
-                               (actor-destroy-db core-state))))
-
-                    (action
-                     (lambda (core-state actor)
-                       (actor/destroy->released core-state actor)))
-
-                    (transition
-                     (lambda (core-state)
-                       (declare (ignore core-state))
-                       RESTART-DESTROY-PHASE)))
-
-        ;; 8
-        (flow-state RESTART-DESTROY-PHASE :reset ()
-                    (selector NIL)
-                    (action NIL)
-                    (transition
-                     (lambda (core-state)
-                       (declare (ignore core-state))
-                       ;; The end of a do/while construct...
-                       PENDING-PREDESTROY-TASKS)))
-
-        ;; 9 A
+                       DECREMENT-COMPONENT-DESTROY-TIMER)))
+        ;; 4 A
         (flow-state DECREMENT-COMPONENT-DESTROY-TIMER :reset ()
                     (selector
                      (lambda (core-state)
@@ -506,7 +437,7 @@
                        (declare (ignore core-state))
                        DECREMENT-ACTOR-DESTROY-TIMER)))
 
-        ;; 9 B
+        ;; 4 B
         (flow-state DECREMENT-ACTOR-DESTROY-TIMER :reset ()
                     (selector
                      (lambda (core-state)
@@ -519,9 +450,92 @@
                     (transition
                      (lambda (core-state)
                        (declare (ignore core-state))
-                       EXIT/DESTROY-PHASE)))
+                       PENDING-DESTROY-TASKS)))
+
+        ;; 5
+        (flow-state PENDING-DESTROY-TASKS :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition
+                     (lambda (core-state)
+                       (if (pending-destroy-tasks-p core-state)
+                           PROTOCOL-DESTROY-COMPONENT
+                           EXIT/DESTROY-PHASE))))
+
+        ;; 6
+        (flow-state PROTOCOL-DESTROY-COMPONENT :reset ()
+                    (selector
+                     (lambda (core-state)
+                       (values :type-policy
+                               (component-destroy-by-type-view core-state))))
+
+                    (action
+                     (lambda (core-state component)
+                       (destroy-component component (context core-state))))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       DISCONNECT-DESTROYED-ACTORS)))
+
+        ;; 7
+        (flow-state DISCONNECT-DESTROYED-ACTORS :reset ()
+                    (selector
+                     (lambda (core-state)
+                       (values :identity-policy
+                               (actor-destroy-db core-state))))
+
+                    (action
+                     (lambda (core-state actor)
+                       (actor/disconnect core-state actor)))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       RELEASE-COMPONENTS)))
+
+        ;; 8
+        (flow-state RELEASE-COMPONENTS :reset ()
+                    (selector
+                     (lambda (core-state)
+                       (values :type-policy
+                               (component-destroy-by-type-view core-state))))
+                    (action
+                     (lambda (core-state component)
+                       (component/destroy->released core-state component)))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       RELEASE-ACTORS)))
+
+        ;; 9
+        (flow-state RELEASE-ACTORS :reset ()
+                    (selector
+                     (lambda (core-state)
+                       (values :identity-policy
+                               (actor-destroy-db core-state))))
+
+                    (action
+                     (lambda (core-state actor)
+                       (actor/destroy->released core-state actor)))
+
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       RESTART-PREDESTROY-PHASE)))
 
         ;; 10
+        (flow-state RESTART-PREDESTROY-PHASE :reset ()
+                    (selector NIL)
+                    (action NIL)
+                    (transition
+                     (lambda (core-state)
+                       (declare (ignore core-state))
+                       ;; The end of a while construct...
+                       PENDING-PREDESTROY-TASKS)))
+
+        ;; 11
         (flow-state EXIT/DESTROY-PHASE :reset ()
                     (selector NIL)
                     (action NIL)
