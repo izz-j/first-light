@@ -167,7 +167,7 @@
                      (lambda (core-state inst)
                        (declare (ignore inst))
                        (let ((display (display core-state)))
-                         (box.fm:tick
+                         (box.frame:tick
                           display
                           (hz display)
                           (lambda ()
@@ -203,7 +203,7 @@
                          (fl.comp.transform::interpolate-transforms
                           (actor-component-by-type (scene-tree core-state)
                                                    'fl.comp.transform:transform)
-                          (box.fm:alpha display)))))
+                          (box.frame:alpha display)))))
 
                     (transition
                      (lambda (core-state)

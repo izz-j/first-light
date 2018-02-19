@@ -4,44 +4,45 @@
 
 (define-scene demo (:enabled t)
   ((@camera
-    ((transform :translation/current (vec3 0 0 50))
+    ((transform :translation/current (v3:make 0.0 0.0 50.0))
      (camera :activep t
              :mode :perspective)))
-   (@fish
-    ((transform :translation/current (vec3 0 -4 0)
-                :rotation/incremental (vec3 0 0.03 0)
-                :scale/current (vec3 24 24 24))
+   (@hex-tile
+    ((transform
+                :rotation/current (v3:make (/ pi 2) 0.0 0.0)
+                :rotation/incremental (v3:make 0.0 0.03 0.0)
+                :scale/current (v3:make 4.0 4.0 4.0))
      (spawn-destroy-test :spawn 1)
-     (mesh :location "data/mesh/fish.glb")
+     (mesh :location "data/mesh/hex-tile.glb")
      (mesh-renderer :shader :texture
                     :texture-location "data/texture/debug.png")))
    (@cube
-    ((transform :translation/current (vec3 0 15 0)
-                :rotation/incremental (vec3 0.02 0.02 0.02)
-                :scale/current (vec3 4 4 4))
+    ((transform :translation/current (v3:make 0.0 15.0 0.0)
+                :rotation/incremental (v3:make 0.02 0.02 0.02)
+                :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/cube.glb")
      (mesh-renderer :shader :texture
                     :texture-location "data/texture/debug.png")))
    (@sphere
-    ((transform :translation/current (vec3 0 -15 0)
-                :rotation/incremental (vec3 0.02 0.02 0.02)
-                :scale/current (vec3 4 4 4))
+    ((transform :translation/current (v3:make 0.0 -15.0 0.0)
+                :rotation/incremental (v3:make 0.02 0.02 0.02)
+                :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/sphere.glb")
      (mesh-renderer :shader :texture
                     :texture-location "data/texture/debug.png")))
 
    (@torus
-    ((transform :translation/current (vec3 15 0 0)
-                :rotation/incremental (vec3 0.02 0.02 0.02)
-                :scale/current (vec3 4 4 4))
+    ((transform :translation/current (v3:make 15.0 0.0 0.0)
+                :rotation/incremental (v3:make 0.02 0.02 0.02)
+                :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/torus.glb")
      (mesh-renderer :shader :texture
                     :texture-location "data/texture/debug.png")))
 
    (@cone
-    ((transform :translation/current (vec3 -15 0 0)
-                :rotation/incremental (vec3 0.02 0.02 0.02)
-                :scale/current (vec3 4 4 4))
+    ((transform :translation/current (v3:make -15.0 0.0 0.0)
+                :rotation/incremental (v3:make 0.02 0.02 0.02)
+                :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/cone.glb")
      (mesh-renderer :shader :texture
                     :texture-location "data/texture/debug.png")))))
