@@ -149,7 +149,7 @@
                        (declare (ignore unused))
                        ;; TODO: right spot for this? Maybe in render
                        ;; flow-state.
-                       (setf (shaders (context core-state))
+                       #++(setf (shaders (context core-state))
                              (compiled-shaders (shaders core-state)))))
 
                     (transition
@@ -566,7 +566,7 @@
                     (action
                      (lambda (core-state inst)
                        (declare (ignore inst))
-                       (maybe-recompile-shaders core-state)
+                       #++(maybe-recompile-shaders core-state)
                        nil))
 
                     (transition
