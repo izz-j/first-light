@@ -8,27 +8,26 @@
      (camera :activep t
              :mode :perspective)))
    (@hex-tile
-    ((transform
-                :rotation/current (v3:make (/ pi 2) 0.0 0.0)
+    ((transform :rotation/current (v3:make (/ pi 2) 0.0 0.0)
                 :rotation/incremental (v3:make 0.0 0.03 0.0)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (spawn-destroy-test :spawn 1)
      (mesh :location "data/mesh/hex-tile.glb")
-     (mesh-renderer :shader :texture
+     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
                     :texture-location "data/texture/debug.png")))
    (@cube
     ((transform :translation/current (v3:make 0.0 15.0 0.0)
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/cube.glb")
-     (mesh-renderer :shader :texture
+     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
                     :texture-location "data/texture/debug.png")))
    (@sphere
     ((transform :translation/current (v3:make 0.0 -15.0 0.0)
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/sphere.glb")
-     (mesh-renderer :shader :texture
+     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
                     :texture-location "data/texture/debug.png")))
 
    (@torus
@@ -36,7 +35,7 @@
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/torus.glb")
-     (mesh-renderer :shader :texture
+     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
                     :texture-location "data/texture/debug.png")))
 
    (@cone
@@ -44,5 +43,5 @@
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/cone.glb")
-     (mesh-renderer :shader :texture
+     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
                     :texture-location "data/texture/debug.png")))))
