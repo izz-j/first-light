@@ -13,35 +13,30 @@
                 :scale/current (v3:make 4.0 4.0 4.0))
      (spawn-destroy-test :spawn 1)
      (mesh :location "data/mesh/hex-tile.glb")
-     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
-                    :texture-location "data/texture/debug.png")))
+     (mesh-renderer :material 'fl.materials:unlit-texture)))
    (@cube
     ((transform :translation/current (v3:make 0.0 15.0 0.0)
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/cube.glb")
-     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
-                    :texture-location "data/texture/debug.png")))
+     (mesh-renderer :material 'fl.materials:unlit-texture)))
    (@sphere
     ((transform :translation/current (v3:make 0.0 -15.0 0.0)
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/sphere.glb")
-     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
-                    :texture-location "data/texture/debug.png")))
+     (mesh-renderer :material 'fl.materials:unlit-texture)))
 
    (@torus
     ((transform :translation/current (v3:make 15.0 0.0 0.0)
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/torus.glb")
-     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
-                    :texture-location "data/texture/debug.png")))
+     (mesh-renderer :material 'fl.materials:unlit-texture)))
 
    (@cone
     ((transform :translation/current (v3:make -15.0 0.0 0.0)
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/cone.glb")
-     (mesh-renderer :shader 'fl.shaders:unlit-texture-decal
-                    :texture-location "data/texture/debug.png")))))
+     (mesh-renderer :material 'fl.materials:unlit-texture)))))
