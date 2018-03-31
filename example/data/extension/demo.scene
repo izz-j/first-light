@@ -19,7 +19,7 @@
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
                 :scale/current (v3:make 4.0 4.0 4.0))
      (mesh :location "data/mesh/cube.glb")
-     (mesh-renderer :material 'fl.materials:unlit-texture)))
+     (mesh-renderer :material 'fl.materials:pbr-damaged-helmet)))
    (@sphere
     ((transform :translation/current (v3:make 0.0 -15.0 0.0)
                 :rotation/incremental (v3:make 0.02 0.02 0.02)
